@@ -57,7 +57,7 @@ class File_Iterator extends FilterIterator
         if ($basepath === FALSE) {
             $basepath = NULL;
         } else {
-            foreach ($exclude as &$_exclude) {
+            foreach ($exclude as $_exclude) {
                 $_exclude = str_replace($basepath, '', $_exclude);
             }
         }

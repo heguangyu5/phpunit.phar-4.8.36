@@ -8,16 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\Diff;
-
-use SebastianBergmann\Diff\LCS\LongestCommonSubsequence;
-use SebastianBergmann\Diff\LCS\TimeEfficientImplementation;
-use SebastianBergmann\Diff\LCS\MemoryEfficientImplementation;
-
 /**
  * Diff implementation.
  */
-class Differ
+class SebastianBergmann_Diff_Differ
 {
     /**
      * @var string
@@ -48,7 +42,7 @@ class Differ
      *
      * @return string
      */
-    public function diff($from, $to, LongestCommonSubsequence $lcs = null)
+    public function diff($from, $to, SebastianBergmann_Diff_LCS_LongestCommonSubsequence $lcs = null)
     {
         $from  = $this->validateDiffInput($from);
         $to    = $this->validateDiffInput($to);
@@ -201,7 +195,7 @@ class Differ
      *
      * @return array
      */
-    public function diffToArray($from, $to, LongestCommonSubsequence $lcs = null)
+    public function diffToArray($from, $to, SebastianBergmann_Diff_LCS_LongestCommonSubsequence $lcs = null)
     {
         if (\is_string($from)) {
             $fromMatches = $this->getNewLineMatches($from);
@@ -315,10 +309,10 @@ class Differ
         $memoryLimit = 100 * 1024 * 1024;
 
         if ($this->calculateEstimatedFootprint($from, $to) > $memoryLimit) {
-            return new MemoryEfficientImplementation;
+            return new SebastianBergmann_Diff_LCS_MemoryEfficientImplementation;
         }
 
-        return new TimeEfficientImplementation;
+        return new SebastianBergmann_Diff_LCS_TimeEfficientImplementation;
     }
 
     /**

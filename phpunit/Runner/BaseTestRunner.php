@@ -71,30 +71,26 @@ abstract class PHPUnit_Runner_BaseTestRunner
             return;
         }
 
-        try {
-            $suiteMethod = $testClass->getMethod(self::SUITE_METHODNAME);
-
-            if (!$suiteMethod->isStatic()) {
-                $this->runFailed(
-                    'suite() method must be static.'
-                );
-
-                return;
-            }
-
+        $suiteMethodName = self::SUITE_METHODNAME;
+        if (method_exists($testClass, $suiteMethodName)) {
+            $oldErrorHandler = set_error_handler(
+                array('PHPUnit_Util_ErrorHandler', 'handleError'),
+                E_DEPRECATED
+            );
             try {
-                $test = $suiteMethod->invoke(null, $testClass->getName());
-            } catch (ReflectionException $e) {
-                $this->runFailed(
-                    sprintf(
-                        "Failed to invoke suite() method.\n%s",
-                        $e->getMessage()
-                    )
-                );
+                $test = $testClass::$suiteMethodName();
+            } catch (PHPUnit_Framework_Error_Deprecated $e) {
+                restore_error_handler();
+                if (substr($e->getMessage(), 0, 17) == 'Non-static method') {
+                    $this->runFailed(
+                        'suite() method must be static.'
+                    );
 
-                return;
+                    return;
+                }
             }
-        } catch (ReflectionException $e) {
+
+        } else {
             try {
                 $test = new PHPUnit_Framework_TestSuite($testClass);
             } catch (PHPUnit_Framework_Exception $e) {
@@ -109,12 +105,12 @@ abstract class PHPUnit_Runner_BaseTestRunner
     }
 
     /**
-     * Returns the loaded ReflectionClass for a suite name.
+     * Returns the loaded string for a suite name.
      *
      * @param string $suiteClassName
      * @param string $suiteClassFile
      *
-     * @return ReflectionClass
+     * @return string
      */
     protected function loadSuiteClass($suiteClassName, $suiteClassFile = '')
     {

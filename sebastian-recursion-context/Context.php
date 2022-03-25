@@ -8,13 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\RecursionContext;
-
 /**
  * A context containing previously processed arrays and objects
  * when recursively processing a value.
  */
-final class Context
+final class SebastianBergmann_RecursionContext_Context
 {
     /**
      * @var array[]

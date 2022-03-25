@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use SebastianBergmann\Environment\Runtime;
-
 /**
  * A TestRunner for the Command Line Interface (CLI)
  * PHP SAPI Module.
@@ -60,18 +58,14 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
      */
     public function __construct(PHPUnit_Runner_TestSuiteLoader $loader = null, PHP_CodeCoverage_Filter $filter = null)
     {
-        if ($filter === null) {
-            $filter = $this->getCodeCoverageFilter();
-        }
-
         $this->codeCoverageFilter = $filter;
         $this->loader             = $loader;
-        $this->runtime            = new Runtime;
+        $this->runtime            = new SebastianBergmann_Environment_Runtime;
     }
 
     /**
-     * @param PHPUnit_Framework_Test|ReflectionClass $test
-     * @param array                                  $arguments
+     * @param PHPUnit_Framework_Test $test
+     * @param array                  $arguments
      *
      * @return PHPUnit_Framework_TestResult
      *
@@ -79,10 +73,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
      */
     public static function run($test, array $arguments = array())
     {
-        if ($test instanceof ReflectionClass) {
-            $test = new PHPUnit_Framework_TestSuite($test);
-        }
-
         if ($test instanceof PHPUnit_Framework_Test) {
             $aTestRunner = new self;
 
@@ -117,21 +107,21 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
 
         if (!empty($arguments['excludeGroups'])) {
             $filterFactory->addFilter(
-                new ReflectionClass('PHPUnit_Runner_Filter_Group_Exclude'),
+                'PHPUnit_Runner_Filter_Group_Exclude',
                 $arguments['excludeGroups']
             );
         }
 
         if (!empty($arguments['groups'])) {
             $filterFactory->addFilter(
-                new ReflectionClass('PHPUnit_Runner_Filter_Group_Include'),
+                'PHPUnit_Runner_Filter_Group_Include',
                 $arguments['groups']
             );
         }
 
         if ($arguments['filter']) {
             $filterFactory->addFilter(
-                new ReflectionClass('PHPUnit_Runner_Filter_Test'),
+                'PHPUnit_Runner_Filter_Test',
                 $arguments['filter']
             );
         }
@@ -225,9 +215,7 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                 if (isset($arguments['printer']) &&
                     is_string($arguments['printer']) &&
                     class_exists($arguments['printer'], false)) {
-                    $class = new ReflectionClass($arguments['printer']);
-
-                    if ($class->isSubclassOf('PHPUnit_TextUI_ResultPrinter')) {
+                    if (is_subclass_of($arguments['printer'], 'PHPUnit_TextUI_ResultPrinter')) {
                         $printerClass = $arguments['printer'];
                     }
                 }
@@ -416,15 +404,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             );
         }
 
-        if (isset($arguments['junitLogfile'])) {
-            $result->addListener(
-                new PHPUnit_Util_Log_JUnit(
-                    $arguments['junitLogfile'],
-                    $arguments['logIncompleteSkipped']
-                )
-            );
-        }
-
         $result->beStrictAboutTestsThatDoNotTestAnything($arguments['reportUselessTests']);
         $result->beStrictAboutOutputDuringTests($arguments['disallowTestOutput']);
         $result->beStrictAboutTodoAnnotatedTests($arguments['disallowTodoAnnotatedTests']);
@@ -432,10 +411,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
         $result->setTimeoutForSmallTests($arguments['timeoutForSmallTests']);
         $result->setTimeoutForMediumTests($arguments['timeoutForMediumTests']);
         $result->setTimeoutForLargeTests($arguments['timeoutForLargeTests']);
-
-        if ($suite instanceof PHPUnit_Framework_TestSuite) {
-            $suite->setRunTestInSeparateProcess($arguments['processIsolation']);
-        }
 
         $suite->run($result);
 
@@ -696,11 +671,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                 $arguments['convertWarningsToExceptions'] = $phpunitConfiguration['convertWarningsToExceptions'];
             }
 
-            if (isset($phpunitConfiguration['processIsolation']) &&
-                !isset($arguments['processIsolation'])) {
-                $arguments['processIsolation'] = $phpunitConfiguration['processIsolation'];
-            }
-
             if (isset($phpunitConfiguration['stopOnError']) &&
                 !isset($arguments['stopOnError'])) {
                 $arguments['stopOnError'] = $phpunitConfiguration['stopOnError'];
@@ -809,12 +779,8 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                     if (count($listener['arguments']) == 0) {
                         $listener = new $listener['class'];
                     } else {
-                        $listenerClass = new ReflectionClass(
-                            $listener['class']
-                        );
-                        $listener      = $listenerClass->newInstanceArgs(
-                            $listener['arguments']
-                        );
+                        $listenerClass = $listener['class'];
+                        $listener      = new $listenerClass($listener['arguments']);
                     }
 
                     if ($listener instanceof PHPUnit_Framework_TestListener) {
@@ -895,16 +861,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             if (isset($loggingConfiguration['tap']) &&
                 !isset($arguments['tapLogfile'])) {
                 $arguments['tapLogfile'] = $loggingConfiguration['tap'];
-            }
-
-            if (isset($loggingConfiguration['junit']) &&
-                !isset($arguments['junitLogfile'])) {
-                $arguments['junitLogfile'] = $loggingConfiguration['junit'];
-
-                if (isset($loggingConfiguration['logIncompleteSkipped']) &&
-                    !isset($arguments['logIncompleteSkipped'])) {
-                    $arguments['logIncompleteSkipped'] = $loggingConfiguration['logIncompleteSkipped'];
-                }
             }
 
             if (isset($loggingConfiguration['testdox-html']) &&
@@ -997,7 +953,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
         $arguments['excludeGroups']                      = isset($arguments['excludeGroups'])                      ? $arguments['excludeGroups']                      : array();
         $arguments['groups']                             = isset($arguments['groups'])                             ? $arguments['groups']                             : array();
         $arguments['logIncompleteSkipped']               = isset($arguments['logIncompleteSkipped'])               ? $arguments['logIncompleteSkipped']               : false;
-        $arguments['processIsolation']                   = isset($arguments['processIsolation'])                   ? $arguments['processIsolation']                   : false;
         $arguments['repeat']                             = isset($arguments['repeat'])                             ? $arguments['repeat']                             : false;
         $arguments['reportHighLowerBound']               = isset($arguments['reportHighLowerBound'])               ? $arguments['reportHighLowerBound']               : 90;
         $arguments['reportLowUpperBound']                = isset($arguments['reportLowUpperBound'])                ? $arguments['reportLowUpperBound']                : 50;
@@ -1037,25 +992,5 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
         }
 
         $this->missingExtensions[$extension] = true;
-    }
-
-    /**
-     * @return PHP_CodeCoverage_Filter
-     */
-    private function getCodeCoverageFilter()
-    {
-        $filter = new PHP_CodeCoverage_Filter;
-
-        if (defined('__PHPUNIT_PHAR__')) {
-            $filter->addFileToBlacklist(__PHPUNIT_PHAR__);
-        }
-
-        $blacklist = new PHPUnit_Util_Blacklist;
-
-        foreach ($blacklist->getBlacklistedDirectories() as $directory) {
-            $filter->addDirectoryToBlacklist($directory);
-        }
-
-        return $filter;
     }
 }

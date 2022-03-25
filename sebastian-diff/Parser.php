@@ -8,12 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace SebastianBergmann\Diff;
-
 /**
  * Unified diff parser.
  */
-class Parser
+class SebastianBergmann_Diff_Parser
 {
     /**
      * @param string $string
@@ -43,7 +41,7 @@ class Parser
                     $collected = array();
                 }
 
-                $diff = new Diff($fromMatch['file'], $toMatch['file']);
+                $diff = new SebastianBergmann_Diff_Diff($fromMatch['file'], $toMatch['file']);
 
                 ++$i;
             } else {
@@ -68,14 +66,14 @@ class Parser
      * @param Diff  $diff
      * @param array $lines
      */
-    private function parseFileDiff(Diff $diff, array $lines)
+    private function parseFileDiff(SebastianBergmann_Diff_Diff $diff, array $lines)
     {
         $chunks = array();
         $chunk  = null;
 
         foreach ($lines as $line) {
             if (\preg_match('/^@@\s+-(?P<start>\d+)(?:,\s*(?P<startrange>\d+))?\s+\+(?P<end>\d+)(?:,\s*(?P<endrange>\d+))?\s+@@/', $line, $match)) {
-                $chunk = new Chunk(
+                $chunk = new SebastianBergmann_Diff_Chunk(
                     $match['start'],
                     isset($match['startrange']) ? \max(1, $match['startrange']) : 1,
                     $match['end'],
@@ -89,15 +87,15 @@ class Parser
             }
 
             if (\preg_match('/^(?P<type>[+ -])?(?P<line>.*)/', $line, $match)) {
-                $type = Line::UNCHANGED;
+                $type = SebastianBergmann_Diff_Line::UNCHANGED;
 
                 if ($match['type'] === '+') {
-                    $type = Line::ADDED;
+                    $type = SebastianBergmann_Diff_Line::ADDED;
                 } elseif ($match['type'] === '-') {
-                    $type = Line::REMOVED;
+                    $type = SebastianBergmann_Diff_Line::REMOVED;
                 }
 
-                $diffLines[] = new Line($type, $match['line']);
+                $diffLines[] = new SebastianBergmann_Diff_Line($type, $match['line']);
 
                 if (null !== $chunk) {
                     $chunk->setLines($diffLines);

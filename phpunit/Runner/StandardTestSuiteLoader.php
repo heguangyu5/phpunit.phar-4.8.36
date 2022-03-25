@@ -19,7 +19,7 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
      * @param string $suiteClassName
      * @param string $suiteClassFile
      *
-     * @return ReflectionClass
+     * @return string
      *
      * @throws PHPUnit_Framework_Exception
      */
@@ -47,9 +47,7 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
             $offset = 0 - strlen($suiteClassName);
 
             foreach ($loadedClasses as $loadedClass) {
-                $class = new ReflectionClass($loadedClass);
-                if (substr($loadedClass, $offset) === $suiteClassName &&
-                    $class->getFileName() == $filename) {
+                if (substr($loadedClass, $offset) === $suiteClassName) {
                     $suiteClassName = $loadedClass;
                     break;
                 }
@@ -60,41 +58,19 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
             $testCaseClass = 'PHPUnit_Framework_TestCase';
 
             foreach ($loadedClasses as $loadedClass) {
-                $class     = new ReflectionClass($loadedClass);
-                $classFile = $class->getFileName();
-
-                if ($class->isSubclassOf($testCaseClass) &&
-                    !$class->isAbstract()) {
+                if (is_subclass_of($loadedClass, $testCaseClass)) {
                     $suiteClassName = $loadedClass;
                     $testCaseClass  = $loadedClass;
-
-                    if ($classFile == realpath($suiteClassFile)) {
-                        break;
-                    }
                 }
 
-                if ($class->hasMethod('suite')) {
-                    $method = $class->getMethod('suite');
-
-                    if (!$method->isAbstract() &&
-                        $method->isPublic() &&
-                        $method->isStatic()) {
-                        $suiteClassName = $loadedClass;
-
-                        if ($classFile == realpath($suiteClassFile)) {
-                            break;
-                        }
-                    }
+                if (method_exists($loadedClass, 'suite')) {
+                    $suiteClassName = $loadedClass;
                 }
             }
         }
 
         if (class_exists($suiteClassName, false)) {
-            $class = new ReflectionClass($suiteClassName);
-
-            if ($class->getFileName() == realpath($suiteClassFile)) {
-                return $class;
-            }
+            return $suiteClassName;
         }
 
         throw new PHPUnit_Framework_Exception(
@@ -107,11 +83,11 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
     }
 
     /**
-     * @param ReflectionClass $aClass
+     * @param string $aClass
      *
-     * @return ReflectionClass
+     * @return string
      */
-    public function reload(ReflectionClass $aClass)
+    public function reload($aClass)
     {
         return $aClass;
     }

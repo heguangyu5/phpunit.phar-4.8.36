@@ -7,11 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace SebastianBergmann\Exporter;
-
-use SebastianBergmann\RecursionContext\Context;
-
 /**
  * A nifty utility for visualizing PHP variables.
  *
@@ -23,7 +18,7 @@ use SebastianBergmann\RecursionContext\Context;
  * print $exporter->export(new Exception);
  * </code>
  */
-class Exporter
+class SebastianBergmann_Exporter_Exporter
 {
     /**
      * Exports a value as a string
@@ -58,7 +53,7 @@ class Exporter
         $exporter = new self();
 
         if (!$context) {
-            $context = new Context;
+            $context = new SebastianBergmann_RecursionContext_Context;
         }
 
         $context->add($data);
@@ -242,7 +237,7 @@ class Exporter
         $whitespace = str_repeat(' ', 4 * $indentation);
 
         if (!$processed) {
-            $processed = new Context;
+            $processed = new SebastianBergmann_RecursionContext_Context;
         }
 
         if (is_array($value)) {

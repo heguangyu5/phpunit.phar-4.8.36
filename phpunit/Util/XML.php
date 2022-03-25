@@ -255,8 +255,7 @@ class PHPUnit_Util_XML
                         }
                     }
 
-                    $class    = new ReflectionClass($className);
-                    $variable = $class->newInstanceArgs($constructorArgs);
+                    $variable = new $className($constructorArgs);
                 } else {
                     $variable = new $className;
                 }
