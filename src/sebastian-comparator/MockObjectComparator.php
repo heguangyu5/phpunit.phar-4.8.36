@@ -22,7 +22,7 @@ class SebastianBergmann_Comparator_MockObjectComparator extends SebastianBergman
      */
     public function accepts($expected, $actual)
     {
-        return $expected instanceof \PHPUnit_Framework_MockObject_MockObject && $actual instanceof \PHPUnit_Framework_MockObject_MockObject;
+        return $expected instanceof PHPUnit_Framework_MockObject_MockObject && $actual instanceof PHPUnit_Framework_MockObject_MockObject;
     }
 
     /**

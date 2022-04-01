@@ -23,7 +23,7 @@ class SebastianBergmann_Comparator_SplObjectStorageComparator extends SebastianB
      */
     public function accepts($expected, $actual)
     {
-        return $expected instanceof \SplObjectStorage && $actual instanceof \SplObjectStorage;
+        return $expected instanceof SplObjectStorage && $actual instanceof SplObjectStorage;
     }
 
     /**

@@ -22,7 +22,7 @@ class SebastianBergmann_Comparator_ExceptionComparator extends SebastianBergmann
      */
     public function accepts($expected, $actual)
     {
-        return $expected instanceof \Exception && $actual instanceof \Exception;
+        return $expected instanceof Exception && $actual instanceof Exception;
     }
 
     /**

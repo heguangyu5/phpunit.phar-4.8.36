@@ -30,7 +30,7 @@ final class SebastianBergmann_RecursionContext_Context
     public function __construct()
     {
         $this->arrays  = array();
-        $this->objects = new \SplObjectStorage;
+        $this->objects = new SplObjectStorage;
     }
 
     /**

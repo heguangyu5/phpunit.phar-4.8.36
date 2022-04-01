@@ -836,6 +836,7 @@ class PHPUnit_Util_XML
                         );
 
                         // try to match each child to one of the 'only' nodes
+                        $breakTwo = false;
                         foreach ($children as $child) {
                             $matched = false;
 
@@ -846,8 +847,12 @@ class PHPUnit_Util_XML
                             }
 
                             if (!$matched) {
-                                break 2;
+                                $breakTwo = true;
+                                break;
                             }
+                        }
+                        if ($breakTwo) {
+                            break;
                         }
                     }
 

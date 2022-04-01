@@ -24,10 +24,10 @@ class SebastianBergmann_Diff_LCS_TimeEfficientImplementation implements Sebastia
     public function calculate(array $from, array $to)
     {
         $common     = array();
-        $fromLength = \count($from);
-        $toLength   = \count($to);
+        $fromLength = count($from);
+        $toLength   = count($to);
         $width      = $fromLength + 1;
-        $matrix     = new \SplFixedArray($width * ($toLength + 1));
+        $matrix     = new SplFixedArray($width * ($toLength + 1));
 
         for ($i = 0; $i <= $fromLength; ++$i) {
             $matrix[$i] = 0;
@@ -40,7 +40,7 @@ class SebastianBergmann_Diff_LCS_TimeEfficientImplementation implements Sebastia
         for ($i = 1; $i <= $fromLength; ++$i) {
             for ($j = 1; $j <= $toLength; ++$j) {
                 $o          = ($j * $width) + $i;
-                $matrix[$o] = \max(
+                $matrix[$o] = max(
                     $matrix[$o - 1],
                     $matrix[$o - $width],
                     $from[$i - 1] === $to[$j - 1] ? $matrix[$o - $width - 1] + 1 : 0
@@ -67,6 +67,6 @@ class SebastianBergmann_Diff_LCS_TimeEfficientImplementation implements Sebastia
             }
         }
 
-        return \array_reverse($common);
+        return array_reverse($common);
     }
 }

@@ -9,6 +9,10 @@
     - phpunit-selenium
     - sebastian-global-state
     - symfony
+    - phpunit/Util/Log
+    - dbunit/Extensions/Database/UI
+    - dbunit/Extensions/Database/DataSet/Specs
+    - dbunit/Extensions/Database/DataSet/Persistors
 
   - namespace 相关调整
     - 去掉了 class 开始部分的 namespace SebastianBergmann/Diff, use SebastianBergmann/Diff

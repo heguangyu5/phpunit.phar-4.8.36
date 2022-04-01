@@ -8,11 +8,9 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testCheckExp()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessageMatches('/^found invalid tag (div|p)$/');
 
         throw new InvalidArgumentException('found invalid tag div');
     }
-
-
 }

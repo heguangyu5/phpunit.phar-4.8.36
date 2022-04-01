@@ -230,7 +230,7 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             }
         }
 
-        if (!$this->printer instanceof PHPUnit_Util_Log_TAP) {
+        if ($this->printer instanceof PHPUnit_TextUI_ResultPrinter) {
             $this->printer->write(
                 PHPUnit_Runner_Version::getVersionString() . "\n"
             );
@@ -345,11 +345,7 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             $codeCoverageReports = 0;
         }
 
-        if (!$this->printer instanceof PHPUnit_Util_Log_TAP) {
-            if ($codeCoverageReports > 0 && !$this->codeCoverageFilter->hasWhitelist()) {
-                $this->printer->write("Warning:\tNo whitelist configured for code coverage\n");
-            }
-
+        if ($this->printer instanceof PHPUnit_TextUI_ResultPrinter) {
             $this->printer->write("\n");
         }
 
@@ -390,18 +386,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             if (isset($arguments['cacheTokens'])) {
                 $codeCoverage->setCacheTokens($arguments['cacheTokens']);
             }
-        }
-
-        if (isset($arguments['jsonLogfile'])) {
-            $result->addListener(
-                new PHPUnit_Util_Log_JSON($arguments['jsonLogfile'])
-            );
-        }
-
-        if (isset($arguments['tapLogfile'])) {
-            $result->addListener(
-                new PHPUnit_Util_Log_TAP($arguments['tapLogfile'])
-            );
         }
 
         $result->beStrictAboutTestsThatDoNotTestAnything($arguments['reportUselessTests']);
@@ -846,21 +830,11 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                 $arguments['coverageXml'] = $loggingConfiguration['coverage-xml'];
             }
 
-            if (isset($loggingConfiguration['json']) &&
-                !isset($arguments['jsonLogfile'])) {
-                $arguments['jsonLogfile'] = $loggingConfiguration['json'];
-            }
-
             if (isset($loggingConfiguration['plain'])) {
                 $arguments['listeners'][] = new PHPUnit_TextUI_ResultPrinter(
                     $loggingConfiguration['plain'],
                     true
                 );
-            }
-
-            if (isset($loggingConfiguration['tap']) &&
-                !isset($arguments['tapLogfile'])) {
-                $arguments['tapLogfile'] = $loggingConfiguration['tap'];
             }
 
             if (isset($loggingConfiguration['testdox-html']) &&

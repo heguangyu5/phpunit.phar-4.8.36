@@ -74,8 +74,7 @@ abstract class PHPUnit_Runner_BaseTestRunner
         $suiteMethodName = self::SUITE_METHODNAME;
         if (method_exists($testClass, $suiteMethodName)) {
             $oldErrorHandler = set_error_handler(
-                array('PHPUnit_Util_ErrorHandler', 'handleError'),
-                E_DEPRECATED
+                array('PHPUnit_Util_ErrorHandler', 'handleError')
             );
             try {
                 $test = $testClass::$suiteMethodName();

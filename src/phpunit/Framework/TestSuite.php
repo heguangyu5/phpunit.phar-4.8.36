@@ -222,8 +222,7 @@ class PHPUnit_Framework_TestSuite implements PHPUnit_Framework_Test, PHPUnit_Fra
 
             if (method_exists($testClass, PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME)) {
                 $oldErrorHandler = set_error_handler(
-                    array('PHPUnit_Util_ErrorHandler', 'handleError'),
-                    E_DEPRECATED
+                    array('PHPUnit_Util_ErrorHandler', 'handleError')
                 );
                 try {
                     $suiteMethodName = PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME;
@@ -309,8 +308,7 @@ class PHPUnit_Framework_TestSuite implements PHPUnit_Framework_Test, PHPUnit_Fra
         foreach ($newClasses as $className) {
             if (method_exists($className, PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME)) {
                 $oldErrorHandler = set_error_handler(
-                    array('PHPUnit_Util_ErrorHandler', 'handleError'),
-                    E_DEPRECATED
+                    array('PHPUnit_Util_ErrorHandler', 'handleError')
                 );
                 try {
                     $suiteMethodName = PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME;

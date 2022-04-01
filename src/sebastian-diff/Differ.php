@@ -49,9 +49,9 @@ class SebastianBergmann_Diff_Differ
         $diff  = $this->diffToArray($from, $to, $lcs);
         $old   = $this->checkIfDiffInOld($diff);
         $start = isset($old[0]) ? $old[0] : 0;
-        $end   = \count($diff);
+        $end   = count($diff);
 
-        if ($tmp = \array_search($end, $old)) {
+        if ($tmp = array_search($end, $old)) {
             $end = $tmp;
         }
 
@@ -67,7 +67,7 @@ class SebastianBergmann_Diff_Differ
      */
     private function validateDiffInput($input)
     {
-        if (!\is_array($input) && !\is_string($input)) {
+        if (!is_array($input) && !is_string($input)) {
             return (string) $input;
         }
 
@@ -197,22 +197,22 @@ class SebastianBergmann_Diff_Differ
      */
     public function diffToArray($from, $to, SebastianBergmann_Diff_LCS_LongestCommonSubsequence $lcs = null)
     {
-        if (\is_string($from)) {
+        if (is_string($from)) {
             $fromMatches = $this->getNewLineMatches($from);
             $from        = $this->splitStringByLines($from);
-        } elseif (\is_array($from)) {
+        } elseif (is_array($from)) {
             $fromMatches = array();
         } else {
-            throw new \InvalidArgumentException('"from" must be an array or string.');
+            throw new InvalidArgumentException('"from" must be an array or string.');
         }
 
-        if (\is_string($to)) {
+        if (is_string($to)) {
             $toMatches = $this->getNewLineMatches($to);
             $to        = $this->splitStringByLines($to);
-        } elseif (\is_array($to)) {
+        } elseif (is_array($to)) {
             $toMatches = array();
         } else {
-            throw new \InvalidArgumentException('"to" must be an array or string.');
+            throw new InvalidArgumentException('"to" must be an array or string.');
         }
 
         list($from, $to, $start, $end) = self::getArrayDiffParted($from, $to);
@@ -221,7 +221,7 @@ class SebastianBergmann_Diff_Differ
             $lcs = $this->selectLcsImplementation($from, $to);
         }
 
-        $common = $lcs->calculate(\array_values($from), \array_values($to));
+        $common = $lcs->calculate(array_values($from), array_values($to));
         $diff   = array();
 
         if ($this->detectUnmatchedLineEndings($fromMatches, $toMatches)) {
@@ -235,29 +235,29 @@ class SebastianBergmann_Diff_Differ
             $diff[] = array($token, 0 /* OLD */);
         }
 
-        \reset($from);
-        \reset($to);
+        reset($from);
+        reset($to);
 
         foreach ($common as $token) {
-            while (($fromToken = \reset($from)) !== $token) {
-                $diff[] = array(\array_shift($from), 2 /* REMOVED */);
+            while (($fromToken = reset($from)) !== $token) {
+                $diff[] = array(array_shift($from), 2 /* REMOVED */);
             }
 
-            while (($toToken = \reset($to)) !== $token) {
-                $diff[] = array(\array_shift($to), 1 /* ADDED */);
+            while (($toToken = reset($to)) !== $token) {
+                $diff[] = array(array_shift($to), 1 /* ADDED */);
             }
 
             $diff[] = array($token, 0 /* OLD */);
 
-            \array_shift($from);
-            \array_shift($to);
+            array_shift($from);
+            array_shift($to);
         }
 
-        while (($token = \array_shift($from)) !== null) {
+        while (($token = array_shift($from)) !== null) {
             $diff[] = array($token, 2 /* REMOVED */);
         }
 
-        while (($token = \array_shift($to)) !== null) {
+        while (($token = array_shift($to)) !== null) {
             $diff[] = array($token, 1 /* ADDED */);
         }
 
@@ -277,7 +277,7 @@ class SebastianBergmann_Diff_Differ
      */
     private function getNewLineMatches($string)
     {
-        \preg_match_all('(\r\n|\r|\n)', $string, $stringMatches);
+        preg_match_all('(\r\n|\r|\n)', $string, $stringMatches);
 
         return $stringMatches;
     }
@@ -291,7 +291,7 @@ class SebastianBergmann_Diff_Differ
      */
     private function splitStringByLines($input)
     {
-        return \preg_split('(\r\n|\r|\n)', $input);
+        return preg_split('(\r\n|\r|\n)', $input);
     }
 
     /**
@@ -327,7 +327,7 @@ class SebastianBergmann_Diff_Differ
     {
         $itemSize = PHP_INT_SIZE === 4 ? 76 : 144;
 
-        return $itemSize * \pow(\min(\count($from), \count($to)), 2);
+        return $itemSize * pow(min(count($from), count($to)), 2);
     }
 
     /**
@@ -341,7 +341,7 @@ class SebastianBergmann_Diff_Differ
     private function detectUnmatchedLineEndings(array $fromMatches, array $toMatches)
     {
         return isset($fromMatches[0], $toMatches[0]) &&
-               \count($fromMatches[0]) === \count($toMatches[0]) &&
+               count($fromMatches[0]) === count($toMatches[0]) &&
                $fromMatches[0] !== $toMatches[0];
     }
 
@@ -356,10 +356,10 @@ class SebastianBergmann_Diff_Differ
         $start = array();
         $end   = array();
 
-        \reset($to);
+        reset($to);
 
         foreach ($from as $k => $v) {
-            $toK = \key($to);
+            $toK = key($to);
 
             if ($toK === $k && $v === $to[$k]) {
                 $start[$k] = $v;
@@ -370,19 +370,19 @@ class SebastianBergmann_Diff_Differ
             }
         }
 
-        \end($from);
-        \end($to);
+        end($from);
+        end($to);
 
         do {
-            $fromK = \key($from);
-            $toK   = \key($to);
+            $fromK = key($from);
+            $toK   = key($to);
 
-            if (null === $fromK || null === $toK || \current($from) !== \current($to)) {
+            if (null === $fromK || null === $toK || current($from) !== current($to)) {
                 break;
             }
 
-            \prev($from);
-            \prev($to);
+            prev($from);
+            prev($to);
 
             $end = array($fromK => $from[$fromK]) + $end;
             unset($from[$fromK], $to[$toK]);

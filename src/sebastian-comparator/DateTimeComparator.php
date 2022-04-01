@@ -22,8 +22,8 @@ class SebastianBergmann_Comparator_DateTimeComparator extends SebastianBergmann_
      */
     public function accepts($expected, $actual)
     {
-        return ($expected instanceof \DateTime || $expected instanceof \DateTimeInterface) &&
-            ($actual instanceof \DateTime || $actual instanceof \DateTimeInterface);
+        return ($expected instanceof DateTime || $expected instanceof DateTimeInterface) &&
+            ($actual instanceof DateTime || $actual instanceof DateTimeInterface);
     }
 
     /**
@@ -40,7 +40,7 @@ class SebastianBergmann_Comparator_DateTimeComparator extends SebastianBergmann_
      */
     public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false, array &$processed = array())
     {
-        $delta = new \DateInterval(sprintf('PT%sS', abs($delta)));
+        $delta = new DateInterval(sprintf('PT%sS', abs($delta)));
 
         $expectedLower = clone $expected;
         $expectedUpper = clone $expected;

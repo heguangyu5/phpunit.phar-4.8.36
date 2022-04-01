@@ -23,15 +23,15 @@ class SebastianBergmann_Diff_LCS_MemoryEfficientImplementation implements Sebast
      */
     public function calculate(array $from, array $to)
     {
-        $cFrom = \count($from);
-        $cTo   = \count($to);
+        $cFrom = count($from);
+        $cTo   = count($to);
 
         if ($cFrom === 0) {
             return array();
         }
 
         if ($cFrom === 1) {
-            if (\in_array($from[0], $to, true)) {
+            if (in_array($from[0], $to, true)) {
                 return array($from[0]);
             }
 
@@ -39,10 +39,10 @@ class SebastianBergmann_Diff_LCS_MemoryEfficientImplementation implements Sebast
         }
 
         $i         = (int) ($cFrom / 2);
-        $fromStart = \array_slice($from, 0, $i);
-        $fromEnd   = \array_slice($from, $i);
+        $fromStart = array_slice($from, 0, $i);
+        $fromEnd   = array_slice($from, $i);
         $llB       = $this->length($fromStart, $to);
-        $llE       = $this->length(\array_reverse($fromEnd), \array_reverse($to));
+        $llE       = $this->length(array_reverse($fromEnd), array_reverse($to));
         $jMax      = 0;
         $max       = 0;
 
@@ -55,10 +55,10 @@ class SebastianBergmann_Diff_LCS_MemoryEfficientImplementation implements Sebast
             }
         }
 
-        $toStart = \array_slice($to, 0, $jMax);
-        $toEnd   = \array_slice($to, $jMax);
+        $toStart = array_slice($to, 0, $jMax);
+        $toEnd   = array_slice($to, $jMax);
 
-        return \array_merge(
+        return array_merge(
             $this->calculate($fromStart, $toStart),
             $this->calculate($fromEnd, $toEnd)
         );
@@ -72,9 +72,9 @@ class SebastianBergmann_Diff_LCS_MemoryEfficientImplementation implements Sebast
      */
     private function length(array $from, array $to)
     {
-        $current = \array_fill(0, \count($to) + 1, 0);
-        $cFrom   = \count($from);
-        $cTo     = \count($to);
+        $current = array_fill(0, count($to) + 1, 0);
+        $cFrom   = count($from);
+        $cTo     = count($to);
 
         for ($i = 0; $i < $cFrom; $i++) {
             $prev = $current;
@@ -83,7 +83,7 @@ class SebastianBergmann_Diff_LCS_MemoryEfficientImplementation implements Sebast
                 if ($from[$i] === $to[$j]) {
                     $current[$j + 1] = $prev[$j] + 1;
                 } else {
-                    $current[$j + 1] = \max($current[$j], $prev[$j + 1]);
+                    $current[$j + 1] = max($current[$j], $prev[$j + 1]);
                 }
             }
         }
