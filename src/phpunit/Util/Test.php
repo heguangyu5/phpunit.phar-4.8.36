@@ -125,25 +125,29 @@ class PHPUnit_Util_Test
      */
     public static function parseTestMethodAnnotations($className, $methodName = '')
     {
-        if (!isset(self::$annotationCache[$className])) {
-            $class                             = new ReflectionClass($className);
-            self::$annotationCache[$className] = self::parseAnnotations($class->getDocComment());
-        }
-
-        if (!empty($methodName) && !isset(self::$annotationCache[$className . '::' . $methodName])) {
-            try {
-                $method      = new ReflectionMethod($className, $methodName);
-                $annotations = self::parseAnnotations($method->getDocComment());
-            } catch (ReflectionException $e) {
-                $annotations = array();
+        if (defined('__BPC__')) {
+            return null;
+        } else {
+            if (!isset(self::$annotationCache[$className])) {
+                $class                             = new ReflectionClass($className);
+                self::$annotationCache[$className] = self::parseAnnotations($class->getDocComment());
             }
-            self::$annotationCache[$className . '::' . $methodName] = $annotations;
-        }
 
-        return array(
-          'class'  => self::$annotationCache[$className],
-          'method' => !empty($methodName) ? self::$annotationCache[$className . '::' . $methodName] : array()
-        );
+            if (!empty($methodName) && !isset(self::$annotationCache[$className . '::' . $methodName])) {
+                try {
+                    $method      = new ReflectionMethod($className, $methodName);
+                    $annotations = self::parseAnnotations($method->getDocComment());
+                } catch (ReflectionException $e) {
+                    $annotations = array();
+                }
+                self::$annotationCache[$className . '::' . $methodName] = $annotations;
+            }
+
+            return array(
+              'class'  => self::$annotationCache[$className],
+              'method' => !empty($methodName) ? self::$annotationCache[$className . '::' . $methodName] : array()
+            );
+        }
     }
 
     /**
@@ -272,9 +276,7 @@ class PHPUnit_Util_Test
 
         if (isset($groups['large']) ||
             (class_exists('PHPUnit_Extensions_Database_TestCase', false) &&
-             is_subclass_of($className, 'PHPUnit_Extensions_Database_TestCase')) ||
-            (class_exists('PHPUnit_Extensions_SeleniumTestCase', false) &&
-             is_subclass_of($className, 'PHPUnit_Extensions_SeleniumTestCase'))) {
+             is_subclass_of($className, 'PHPUnit_Extensions_Database_TestCase'))) {
             $size = self::LARGE;
         } elseif (isset($groups['medium'])) {
             $size = self::MEDIUM;

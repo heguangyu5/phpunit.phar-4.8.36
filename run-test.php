@@ -75,9 +75,6 @@ require 'src/dbunit/Extensions/Database/Operation/Replace.php';
 require 'src/dbunit/Extensions/Database/Operation/Truncate.php';
 require 'src/dbunit/Extensions/Database/Operation/Update.php';
 require 'src/dbunit/Extensions/Database/TestCase.php';
-require 'src/phpunit/Extensions/GroupTestSuite.php';
-require 'src/phpunit/Extensions/PhptTestCase.php';
-require 'src/phpunit/Extensions/PhptTestSuite.php';
 require 'src/phpunit/Extensions/TestDecorator.php';
 require 'src/phpunit/Extensions/RepeatedTest.php';
 require 'src/phpunit/Extensions/TicketListener.php';
@@ -202,7 +199,6 @@ require 'src/phpunit/Util/Printer.php';
 require 'src/phpunit/TextUI/ResultPrinter.php';
 require 'src/phpunit/TextUI/TestRunner.php';
 require 'src/phpunit/Util/Blacklist.php';
-require 'src/phpunit/Util/Configuration.php';
 require 'src/phpunit/Util/ErrorHandler.php';
 require 'src/phpunit/Util/Fileloader.php';
 require 'src/phpunit/Util/Filesystem.php';
@@ -210,9 +206,6 @@ require 'src/phpunit/Util/Filter.php';
 require 'src/phpunit/Util/Getopt.php';
 require 'src/phpunit/Util/GlobalState.php';
 require 'src/phpunit/Util/InvalidArgumentHelper.php';
-require 'src/phpunit/Util/PHP.php';
-require 'src/phpunit/Util/PHP/Default.php';
-require 'src/phpunit/Util/PHP/Windows.php';
 require 'src/phpunit/Util/Regex.php';
 require 'src/phpunit/Util/String.php';
 require 'src/phpunit/Util/Test.php';
@@ -222,7 +215,6 @@ require 'src/phpunit/Util/TestDox/ResultPrinter/HTML.php';
 require 'src/phpunit/Util/TestDox/ResultPrinter/Text.php';
 require 'src/phpunit/Util/TestSuiteIterator.php';
 require 'src/phpunit/Util/Type.php';
-require 'src/phpunit/Util/XML.php';
 require 'src/sebastian-comparator/Comparator.php';
 require 'src/sebastian-comparator/Factory.php';
 require 'src/sebastian-comparator/ArrayComparator.php';
@@ -254,5 +246,9 @@ require 'src/sebastian-recursion-context/Exception.php';
 require 'src/sebastian-recursion-context/InvalidArgumentException.php';
 require 'src/sebastian-version/Version.php';
 require 'src/php-text-template/Template.php';
+
+if (defined('__BPC__')) {
+    require 'testcase-list.php';
+}
 
 PHPUnit_TextUI_Command::main();

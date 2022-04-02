@@ -48,11 +48,15 @@ abstract class PHPUnit_Runner_BaseTestRunner
     {
         if (is_dir($suiteClassName) &&
             !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
-            $facade = new File_Iterator_Facade;
-            $files  = $facade->getFilesAsArray(
-                $suiteClassName,
-                $suffixes
-            );
+            if (defined('__BPC__')) {
+                $files  = TESTCASE_LIST;
+            } else {
+                $facade = new File_Iterator_Facade;
+                $files  = $facade->getFilesAsArray(
+                    $suiteClassName,
+                    $suffixes
+                );
+            }
 
             $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
             $suite->addTestFiles($files);
