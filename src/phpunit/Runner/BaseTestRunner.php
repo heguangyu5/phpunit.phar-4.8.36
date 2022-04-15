@@ -46,22 +46,26 @@ abstract class PHPUnit_Runner_BaseTestRunner
      */
     public function getTest($suiteClassName, $suiteClassFile = '', $suffixes = '')
     {
-        if (is_dir($suiteClassName) &&
-            !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
-            if (defined('__BPC__')) {
-                $files  = TESTCASE_LIST;
-            } else {
+        if (defined('__BPC__')) {
+            $files = TESTCASE_LIST;
+            $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
+            $suite->addTestFiles($files);
+
+            return $suite;
+        } else {
+            if (is_dir($suiteClassName) &&
+                !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
                 $facade = new File_Iterator_Facade;
                 $files  = $facade->getFilesAsArray(
                     $suiteClassName,
                     $suffixes
                 );
+
+                $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
+                $suite->addTestFiles($files);
+
+                return $suite;
             }
-
-            $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
-            $suite->addTestFiles($files);
-
-            return $suite;
         }
 
         try {

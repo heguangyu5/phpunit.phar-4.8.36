@@ -511,10 +511,16 @@ class PHPUnit_TextUI_Command
             $this->arguments['printer'] = $this->handlePrinter($this->arguments['printer']);
         }
 
-        if (!isset($this->arguments['test']) ||
-            (isset($this->arguments['testDatabaseLogRevision']) && !isset($this->arguments['testDatabaseDSN']))) {
-            $this->showHelp();
-            exit(PHPUnit_TextUI_TestRunner::EXCEPTION_EXIT);
+        if (defined('__BPC__')) {
+            if (!isset($this->arguments['test'])) {
+                $this->arguments['test'] = 'BPC_TEST';
+            }
+        } else {
+            if (!isset($this->arguments['test']) ||
+                (isset($this->arguments['testDatabaseLogRevision']) && !isset($this->arguments['testDatabaseDSN']))) {
+                $this->showHelp();
+                exit(PHPUnit_TextUI_TestRunner::EXCEPTION_EXIT);
+            }
         }
     }
 

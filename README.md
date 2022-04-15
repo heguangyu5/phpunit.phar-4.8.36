@@ -37,8 +37,14 @@
     
   - 测试文件的获取
     - 用php跑的时候可以直接指定tests所在的文件夹
-    - bpc跑之前，需先运行get-tests.php文件，获取到所需要的测试文件列表，写入到了testcase-list.php文件中，从这个文件中直接拿到了需要测试的文件列表
+    - bpc跑之前，需先运行get-tests.php文件，获取到所需要的测试文件列表，写入到了test-files文件中，并且生成测试入口文件run-test.php
 
 ## 跑测试
-  - 可先用phar跑一下， phpunit --bootstrap=phar-bootstrap.php tests/ --group=xxx
-  - 再用修改过的phpunit-4.8.36跑一下， php run-test.php tests/ --group=xxx
+  - 可先用phar跑一下， ./phpunit-4.8.36.phar tests/ --group=xxx --exclude-group=exception(因为expectException等方法在4.8.36下还未支持)
+  
+  - 再用php跑一下修改过的程序， php src/phpunit.php tests/ --group=xxx
+  
+  - 再用编译过的跑一下
+     - 需要先 php get-tests.php tests/ 生成测试入口文件以及将测试的文件列表写到一个test-files文件中
+     - 编译: make test.dev
+     - 运行编译后的测试 ./test.dev --group=xxx

@@ -1,0 +1,204 @@
+PHPUNIT_FILES = Linker.php                                                                          \
+                src/php-timer/Timer.php                                                             \
+                src/phpunit/Framework/Assert.php                                                    \
+                src/phpunit/Framework/SelfDescribing.php                                            \
+                src/phpunit/Exception.php                                                           \
+                src/phpunit/Framework/Exception.php                                                 \
+                src/phpunit/Framework/AssertionFailedError.php                                      \
+                src/phpunit/Framework/TestListener.php                                              \
+                src/phpunit/Framework/BaseTestListener.php                                          \
+                src/phpunit/Framework/Test.php                                                      \
+                src/phpunit/Framework/TestCase.php                                                  \
+                src/phpunit/Framework/TestSuite.php                                                 \
+                src/phpunit/Framework/Constraint.php                                                \
+                src/phpunit/Extensions/TestDecorator.php                                            \
+                src/phpunit/Extensions/RepeatedTest.php                                             \
+                src/phpunit/Extensions/TicketListener.php                                           \
+                src/phpunit/Framework/Constraint/And.php                                            \
+                src/phpunit/Framework/Constraint/ArrayHasKey.php                                    \
+                src/phpunit/Framework/Constraint/ArraySubset.php                                    \
+                src/phpunit/Framework/Constraint/Composite.php                                      \
+                src/phpunit/Framework/Constraint/Attribute.php                                      \
+                src/phpunit/Framework/Constraint/Callback.php                                       \
+                src/phpunit/Framework/Constraint/ClassHasAttribute.php                              \
+                src/phpunit/Framework/Constraint/ClassHasStaticAttribute.php                        \
+                src/phpunit/Framework/Constraint/Count.php                                          \
+                src/phpunit/Framework/Constraint/Exception.php                                      \
+                src/phpunit/Framework/Constraint/ExceptionCode.php                                  \
+                src/phpunit/Framework/Constraint/ExceptionMessage.php                               \
+                src/phpunit/Framework/Constraint/ExceptionMessageRegExp.php                         \
+                src/phpunit/Framework/Constraint/FileExists.php                                     \
+                src/phpunit/Framework/Constraint/GreaterThan.php                                    \
+                src/phpunit/Framework/Constraint/IsAnything.php                                     \
+                src/phpunit/Framework/Constraint/IsEmpty.php                                        \
+                src/phpunit/Framework/Constraint/IsEqual.php                                        \
+                src/phpunit/Framework/Constraint/IsFalse.php                                        \
+                src/phpunit/Framework/Constraint/IsIdentical.php                                    \
+                src/phpunit/Framework/Constraint/IsInstanceOf.php                                   \
+                src/phpunit/Framework/Constraint/IsJson.php                                         \
+                src/phpunit/Framework/Constraint/IsNull.php                                         \
+                src/phpunit/Framework/Constraint/IsTrue.php                                         \
+                src/phpunit/Framework/Constraint/IsType.php                                         \
+                src/phpunit/Framework/Constraint/JsonMatches.php                                    \
+                src/phpunit/Framework/Constraint/JsonMatches/ErrorMessageProvider.php               \
+                src/phpunit/Framework/Constraint/LessThan.php                                       \
+                src/phpunit/Framework/Constraint/Not.php                                            \
+                src/phpunit/Framework/Constraint/ObjectHasAttribute.php                             \
+                src/phpunit/Framework/Constraint/Or.php                                             \
+                src/phpunit/Framework/Constraint/PCREMatch.php                                      \
+                src/phpunit/Framework/Constraint/SameSize.php                                       \
+                src/phpunit/Framework/Constraint/StringContains.php                                 \
+                src/phpunit/Framework/Constraint/StringEndsWith.php                                 \
+                src/phpunit/Framework/Constraint/StringMatches.php                                  \
+                src/phpunit/Framework/Constraint/StringStartsWith.php                               \
+                src/phpunit/Framework/Constraint/TraversableContains.php                            \
+                src/phpunit/Framework/Constraint/TraversableContainsOnly.php                        \
+                src/phpunit/Framework/Constraint/Xor.php                                            \
+                src/phpunit/Framework/Error.php                                                     \
+                src/phpunit/Framework/Error/Deprecated.php                                          \
+                src/phpunit/Framework/Error/Notice.php                                              \
+                src/phpunit/Framework/Error/Warning.php                                             \
+                src/phpunit/Framework/ExceptionWrapper.php                                          \
+                src/phpunit/Framework/ExpectationFailedException.php                                \
+                src/phpunit/Framework/IncompleteTest.php                                            \
+                src/phpunit/Framework/IncompleteTestCase.php                                        \
+                src/phpunit/Framework/IncompleteTestError.php                                       \
+                src/phpunit/Framework/SkippedTest.php                                               \
+                src/phpunit/Framework/InvalidCoversTargetError.php                                  \
+                src/phpunit/Framework/InvalidCoversTargetException.php                              \
+                src/phpunit-mock-objects/Framework/MockObject/Exception/Exception.php               \
+                src/phpunit-mock-objects/Framework/MockObject/Exception/BadMethodCallException.php  \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/Identity.php                  \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/Stub.php                      \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/Match.php                     \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/ParametersMatch.php           \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/MethodNameMatch.php           \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/InvocationMocker.php          \
+                src/phpunit-mock-objects/Framework/MockObject/Builder/Namespace.php                 \
+                src/phpunit-mock-objects/Framework/MockObject/Generator.php                         \
+                src/phpunit-mock-objects/Framework/MockObject/Invocation.php                        \
+                src/phpunit-mock-objects/Framework/MockObject/Invocation/Static.php                 \
+                src/phpunit-mock-objects/Framework/MockObject/Invocation/Object.php                 \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/MatcherCollection.php            \
+                src/phpunit-mock-objects/Framework/MockObject/Verifiable.php                        \
+                src/phpunit-mock-objects/Framework/MockObject/Invokable.php                         \
+                src/phpunit-mock-objects/Framework/MockObject/InvocationMocker.php                  \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/Invocation.php                \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher.php                           \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/InvokedRecorder.php           \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/AnyInvokedCount.php           \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/StatelessInvocation.php       \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/AnyParameters.php             \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/ConsecutiveParameters.php     \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/InvokedAtIndex.php            \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/InvokedAtLeastCount.php       \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/InvokedAtLeastOnce.php        \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/InvokedAtMostCount.php        \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/InvokedCount.php              \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/MethodName.php                \
+                src/phpunit-mock-objects/Framework/MockObject/Matcher/Parameters.php                \
+                src/phpunit-mock-objects/Framework/MockObject/MockBuilder.php                       \
+                src/phpunit-mock-objects/Framework/MockObject/MockObject.php                        \
+                src/phpunit-mock-objects/Framework/MockObject/Exception/RuntimeException.php        \
+                src/phpunit-mock-objects/Framework/MockObject/Stub.php                              \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/ConsecutiveCalls.php             \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/Exception.php                    \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/Return.php                       \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/ReturnArgument.php               \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/ReturnCallback.php               \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/ReturnSelf.php                   \
+                src/phpunit-mock-objects/Framework/MockObject/Stub/ReturnValueMap.php               \
+                src/phpunit/Framework/OutputError.php                                               \
+                src/phpunit/Framework/RiskyTest.php                                                 \
+                src/phpunit/Framework/RiskyTestError.php                                            \
+                src/phpunit/Framework/SkippedTestCase.php                                           \
+                src/phpunit/Framework/SkippedTestError.php                                          \
+                src/phpunit/Framework/SkippedTestSuiteError.php                                     \
+                src/phpunit/Framework/SyntheticError.php                                            \
+                src/phpunit/Framework/TestFailure.php                                               \
+                src/phpunit/Framework/TestResult.php                                                \
+                src/phpunit/Framework/TestSuite/DataProvider.php                                    \
+                src/phpunit/Framework/UnintentionallyCoveredCodeError.php                           \
+                src/phpunit/Framework/Warning.php                                                   \
+                src/phpunit/Runner/BaseTestRunner.php                                               \
+                src/phpunit/Runner/Exception.php                                                    \
+                src/phpunit/Runner/TestSuiteLoader.php                                              \
+                src/phpunit/Runner/StandardTestSuiteLoader.php                                      \
+                src/phpunit/Runner/Version.php                                                      \
+                src/phpunit/TextUI/Command.php                                                      \
+                src/phpunit/Util/Printer.php                                                        \
+                src/phpunit/TextUI/ResultPrinter.php                                                \
+                src/phpunit/TextUI/TestRunner.php                                                   \
+                src/phpunit/Util/Blacklist.php                                                      \
+                src/phpunit/Util/ErrorHandler.php                                                   \
+                src/phpunit/Util/Fileloader.php                                                     \
+                src/phpunit/Util/Filesystem.php                                                     \
+                src/phpunit/Util/Filter.php                                                         \
+                src/phpunit/Util/Getopt.php                                                         \
+                src/phpunit/Util/GlobalState.php                                                    \
+                src/phpunit/Util/InvalidArgumentHelper.php                                          \
+                src/phpunit/Util/Regex.php                                                          \
+                src/phpunit/Util/String.php                                                         \
+                src/phpunit/Util/Test.php                                                           \
+                src/phpunit/Util/TestDox/NamePrettifier.php                                         \
+                src/phpunit/Util/TestDox/ResultPrinter.php                                          \
+                src/phpunit/Util/TestDox/ResultPrinter/HTML.php                                     \
+                src/phpunit/Util/TestDox/ResultPrinter/Text.php                                     \
+                src/phpunit/Util/Type.php                                                           \
+                src/sebastian-comparator/Comparator.php                                             \
+                src/sebastian-comparator/Factory.php                                                \
+                src/sebastian-comparator/ArrayComparator.php                                        \
+                src/sebastian-comparator/ObjectComparator.php                                       \
+                src/sebastian-comparator/ComparisonFailure.php                                      \
+                src/sebastian-comparator/DateTimeComparator.php                                     \
+                src/sebastian-comparator/ScalarComparator.php                                       \
+                src/sebastian-comparator/NumericComparator.php                                      \
+                src/sebastian-comparator/DoubleComparator.php                                       \
+                src/sebastian-comparator/ExceptionComparator.php                                    \
+                src/sebastian-comparator/MockObjectComparator.php                                   \
+                src/sebastian-comparator/ResourceComparator.php                                     \
+                src/sebastian-comparator/TypeComparator.php                                         \
+                src/sebastian-diff/Chunk.php                                                        \
+                src/sebastian-diff/Diff.php                                                         \
+                src/sebastian-diff/Differ.php                                                       \
+                src/sebastian-diff/LCS/LongestCommonSubsequence.php                                 \
+                src/sebastian-diff/LCS/MemoryEfficientLongestCommonSubsequenceImplementation.php    \
+                src/sebastian-diff/LCS/TimeEfficientLongestCommonSubsequenceImplementation.php      \
+                src/sebastian-diff/Line.php                                                         \
+                src/sebastian-diff/Parser.php                                                       \
+                src/sebastian-environment/Console.php                                               \
+                src/sebastian-environment/Runtime.php                                               \
+                src/sebastian-exporter/Exporter.php                                                 \
+                src/sebastian-recursion-context/Context.php                                         \
+                src/sebastian-recursion-context/Exception.php                                       \
+                src/sebastian-recursion-context/InvalidArgumentException.php                        \
+                src/sebastian-version/Version.php                                                   \
+                src/php-text-template/Template.php                                                  \
+                src/phpunit/Util/TestSuiteIterator.php                                              \
+                src/phpunit/Runner/Filter/Factory.php                                               \
+                src/phpunit/Runner/Filter/Group.php                                                 \
+                src/phpunit/Runner/Filter/Group/Exclude.php                                         \
+                src/phpunit/Runner/Filter/Group/Include.php                                         \
+                src/phpunit/Runner/Filter/Test.php
+
+MOCK_FILES=$(shell ls src/phpunit-mock-objects/Framework/MockObject/MockClassFile/*.php)
+
+LIB_DIR=$(shell pwd)/lib-tmp
+
+lib-tmp/libphpunit-dev_u-4.4a.a: $(PHPUNIT_FILES)
+	bpc -v \
+	    -l phpunit-dev \
+	    $(PHPUNIT_FILES)
+	bpc -l phpunit-dev --install -L $(LIB_DIR)
+	rm -v *phpunit-dev*
+
+test.dev: lib-tmp/libphpunit-dev_u-4.4a.a run-test.php test-files
+	bpc -v \
+	    --static \
+	    -o test.dev \
+	    -L $(LIB_DIR) \
+	    -u phpunit-dev \
+	    -d display_errors=on \
+	    run-test.php \
+	    $(MOCK_FILES) \
+	    --input-file test-files
