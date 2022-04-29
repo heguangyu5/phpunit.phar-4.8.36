@@ -34,17 +34,15 @@
 
   - Mock调整
     - 先用php跑一遍，获取到Mock的Class，写入到mockClassFile文件夹中，第二次用bpc跑的时候直接include写好的MockClass文件
-    
-  - 测试文件的获取
-    - 用php跑的时候可以直接指定tests所在的文件夹
-    - bpc跑之前，需先运行get-tests.php文件，获取到所需要的测试文件列表，写入到了test-files文件中，并且生成测试入口文件run-test.php
 
 ## 跑测试
-  - 可先用phar跑一下， ./phpunit-4.8.36.phar tests/ --group=xxx --exclude-group=exception(因为expectException等方法在4.8.36下还未支持)
+  - 可先用phar跑一下，./phpunit-4.8.36.phar phpunit-test/tests/ --group=xxx --exclude-group=exception(因为expectException等方法在4.8.36下还未支持)
   
-  - 再用php跑一下修改过的程序， php src/phpunit.php tests/ --group=xxx
-  
+  - 再用php跑一下修改过的程序, 目的是获取到测试文件列表和生成MockClass文件
+    - cd phpunit-test
+    - make test-init (运行前保证已修改的phpunit源码放在了/usr/share/php/文件夹下)
+    - php phpunit/phpunit.php tests/ --save-test-files-path (运行后会将测试所需的文件列表写入到test-files文件中，并生成测试入口文件run-test.php)
+
   - 再用编译过的跑一下
-     - 需要先 php get-tests.php tests/ 生成测试入口文件以及将测试的文件列表写到一个test-files文件中
-     - 编译: make test.dev
-     - 运行编译后的测试 ./test.dev --group=xxx
+    - make test.dev
+    - ./test.dev --group=xxx
