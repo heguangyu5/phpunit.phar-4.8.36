@@ -24,7 +24,7 @@ if (defined('__BPC__')) {
                 $mockClassName = 'Mock_' . $type;
             }
 
-            include __DIR__ . '/MockClassFile/' . $mockClassName . '.php';
+            include_once RUN_ROOT_DIR . '/MockClassFile/' . $mockClassName . '.php';
 
             return $this->getObject(
                 $mockClassName,
@@ -293,8 +293,9 @@ if (defined('__BPC__')) {
             );
 
             if (!class_exists($mock['mockClassName'], false)) {
-                file_put_contents(__DIR__ . '/MockClassFile/' . $mockClassName . '.php', "<?php\n\n" . $mock['code']);
-                include __DIR__ . '/MockClassFile/' . $mockClassName . '.php';
+                $mockClassPath = getcwd() . '/MockClassFile/' . $mockClassName . '.php';
+                file_put_contents($mockClassPath, "<?php\n\n" . $mock['code']);
+                include $mockClassPath;
             }
 
             return $this->getObject(

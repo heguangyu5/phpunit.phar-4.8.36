@@ -23,6 +23,8 @@ abstract class PHPUnit_Runner_BaseTestRunner
     const STATUS_RISKY      = 5;
     const SUITE_METHODNAME  = 'suite';
 
+    protected $arguments;
+
     /**
      * Returns the loader to be used.
      *
@@ -60,6 +62,27 @@ abstract class PHPUnit_Runner_BaseTestRunner
                     $suiteClassName,
                     $suffixes
                 );
+
+                if (isset($this->arguments['save-test-files-path'])) {
+                    $testParentDir = dirname(realpath($suiteClassName));
+                    $definedFiles  = array();
+                    foreach ($files as $file) {
+                         $definedFiles[] = "__DIR__ . '" . str_replace($testParentDir, '', $file) . "',";
+                    }
+                    $definedFiles = implode("\n    ", $definedFiles);
+                    $code = <<<RUNCODR
+<?php
+define('RUN_ROOT_DIR', __DIR__);
+define('TESTCASE_LIST', array(
+    $definedFiles
+));
+
+include 'phpunit/loader.php';
+PHPUnit_TextUI_Command::main();
+RUNCODR;
+
+                    file_put_contents(getcwd() . '/run-test.php', $code);
+                }
 
                 $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
                 $suite->addTestFiles($files);
@@ -140,4 +163,9 @@ abstract class PHPUnit_Runner_BaseTestRunner
      * @param string $message
      */
     abstract protected function runFailed($message);
+
+    public function setArguments($arguments = array())
+    {
+        $this->arguments = $arguments;
+    }
 }

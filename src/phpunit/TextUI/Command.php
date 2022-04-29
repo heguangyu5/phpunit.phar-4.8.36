@@ -75,13 +75,20 @@ class PHPUnit_TextUI_Command
         'printer='             => null,
         'static-backup'        => null,
         'verbose'              => null,
-        'version'              => null
+        'version'              => null,
+        'save-test-files-path' => null
     );
 
     /**
      * @var bool
      */
     private $versionStringPrinted = false;
+
+    /**
+     * @var array
+     * save before test run included files
+     */
+    private $runBeforeFiles = array();
 
     /**
      * @param bool $exit
@@ -104,6 +111,7 @@ class PHPUnit_TextUI_Command
         $this->handleArguments($argv);
 
         $runner = $this->createRunner();
+        $runner->setArguments($this->arguments);
 
         if (is_object($this->arguments['test']) &&
             $this->arguments['test'] instanceof PHPUnit_Framework_Test) {
@@ -142,6 +150,17 @@ class PHPUnit_TextUI_Command
             $result = $runner->doRun($suite, $this->arguments);
         } catch (PHPUnit_Framework_Exception $e) {
             print $e->getMessage() . "\n";
+        }
+
+        if (isset($this->arguments['save-test-files-path'])) {
+            $files         = array_diff(get_included_files(), $this->runBeforeFiles);
+            $testFilesPath = getcwd() . '/test-files';
+            if (file_exists($testFilesPath)) {
+                $existFiles = file($testFilesPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                $files      = array_merge($files, $existFiles);
+            }
+            $files = array_unique($files);
+            file_put_contents($testFilesPath, implode("\n", $files));
         }
 
         $ret = PHPUnit_TextUI_TestRunner::FAILURE_EXIT;
@@ -234,6 +253,14 @@ class PHPUnit_TextUI_Command
             );
         } catch (PHPUnit_Framework_Exception $e) {
             $this->showError($e->getMessage());
+        }
+
+        foreach ($this->options[0] as $option) {
+            if ($option[0] == '--save-test-files-path') {
+                $this->arguments['save-test-files-path'] = true;
+                $this->runBeforeFiles = get_included_files();
+                break;
+            }
         }
 
         foreach ($this->options[0] as $option) {
