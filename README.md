@@ -1,6 +1,5 @@
 ## 对 phpunit 进行了哪些修改
   - 去掉了哪些文件夹
-    - doctrine-instantiator
     - php-code-coverage
     - phpdocumentor-reflection-docblock
     - php-invoker

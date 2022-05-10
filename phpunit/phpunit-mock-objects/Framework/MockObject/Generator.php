@@ -332,6 +332,23 @@ if (defined('__BPC__')) {
                     $class  = new ReflectionClass($className);
                     $object = $class->newInstanceArgs($arguments);
                 }
+            } else {
+                try {
+                    $instantiator = new Doctrine_Instantiator_Instantiator;
+                    $object       = $instantiator->instantiate($className);
+                } catch (Doctrine_Instantiator_Exception_UnexpectedValueException $exception) {
+                    if ($exception->getPrevious()) {
+                        $exception = $exception->getPrevious();
+                    }
+
+                    throw new PHPUnit_Framework_MockObject_RuntimeException(
+                        $exception->getMessage()
+                    );
+                } catch (InstantiatorInvalidArgumentException $exception) {
+                    throw new PHPUnit_Framework_MockObject_RuntimeException(
+                        $exception->getMessage()
+                    );
+                }
             }
 
             if ($callOriginalMethods) {

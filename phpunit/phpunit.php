@@ -1,5 +1,10 @@
 <?php
 
+require 'doctrine-instantiator/Doctrine/Instantiator/Exception/ExceptionInterface.php';
+require 'doctrine-instantiator/Doctrine/Instantiator/Exception/InvalidArgumentException.php';
+require 'doctrine-instantiator/Doctrine/Instantiator/Exception/UnexpectedValueException.php';
+require 'doctrine-instantiator/Doctrine/Instantiator/InstantiatorInterface.php';
+require 'doctrine-instantiator/Doctrine/Instantiator/Instantiator.php';
 require 'php-timer/Timer.php';
 require 'php-file-iterator/Iterator.php';
 require 'php-file-iterator/Facade.php';
