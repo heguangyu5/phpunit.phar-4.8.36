@@ -35,13 +35,14 @@
     - 先用php跑一遍，获取到Mock的Class，写入到mockClassFile文件夹中，第二次用bpc跑的时候直接include写好的MockClass文件
 
 ## 跑测试
-  - 可先用phar跑一下，./phpunit-4.8.36.phar phpunit-test/tests/ --group=xxx --exclude-group=exception(因为expectException等方法在4.8.36下还未支持)
-  
+  - cd phpunit-test
+  - ./create-db.sh
+  - 可先用phar跑一下，./phpunit-4.8.36.phar tests/ --bootstrap=bootstrap.php --group=xxx --exclude-group=exception(因为expectException等方法在4.8.36下还未支持)
+
   - 再用php跑一下修改过的程序, 目的是获取到测试文件列表和生成MockClass文件
-    - cd phpunit-test
     - make test-init (运行前保证已修改的phpunit源码放在了/usr/share/php/文件夹下)
-    - php phpunit/phpunit.php tests/ --save-test-files-path (运行后会将测试所需的文件列表写入到test-files文件中，并生成测试入口文件run-test.php)
+    - php phpunit/phpunit.php tests/ --bootstrap=bootstrap.php --save-test-files-path (运行后会将测试所需的文件列表写入到test-files文件中，并生成测试入口文件run-test.php)
 
   - 再用编译过的跑一下
     - make test.dev
-    - ./test.dev --group=xxx
+    - ./test.dev --bootstrap=bootstrap.php --group=xxx

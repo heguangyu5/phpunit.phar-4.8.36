@@ -44,7 +44,6 @@ require 'dbunit/Extensions/Database/DataSet/QueryTable.php';
 require 'dbunit/Extensions/Database/DataSet/ReplacementDataSet.php';
 require 'dbunit/Extensions/Database/DataSet/ReplacementTable.php';
 require 'dbunit/Extensions/Database/DataSet/ReplacementTableIterator.php';
-require 'dbunit/Extensions/Database/IDatabaseListConsumer.php';
 require 'dbunit/Extensions/Database/DataSet/TableFilter.php';
 require 'dbunit/Extensions/Database/DataSet/TableMetaDataFilter.php';
 require 'dbunit/Extensions/Database/DB/DataSet.php';

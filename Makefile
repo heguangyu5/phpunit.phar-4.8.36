@@ -179,7 +179,66 @@ PHPUNIT_FILES = phpunit/loader.php                                              
                 phpunit/phpunit/Runner/Filter/Group.php                                                 \
                 phpunit/phpunit/Runner/Filter/Group/Exclude.php                                         \
                 phpunit/phpunit/Runner/Filter/Group/Include.php                                         \
-                phpunit/phpunit/Runner/Filter/Test.php
+                phpunit/phpunit/Runner/Filter/Test.php                                                  \
+                phpunit/dbunit/Extensions/Database/ITester.php                                          \
+                phpunit/dbunit/Extensions/Database/AbstractTester.php                                   \
+                phpunit/dbunit/Extensions/Database/Constraint/DataSetIsEqual.php                        \
+                phpunit/dbunit/Extensions/Database/Constraint/TableIsEqual.php                          \
+                phpunit/dbunit/Extensions/Database/Constraint/TableRowCount.php                         \
+                phpunit/dbunit/Extensions/Database/DataSet/IDataSet.php                                 \
+                phpunit/dbunit/Extensions/Database/DataSet/AbstractDataSet.php                          \
+                phpunit/dbunit/Extensions/Database/DataSet/ITable.php                                   \
+                phpunit/dbunit/Extensions/Database/DataSet/AbstractTable.php                            \
+                phpunit/dbunit/Extensions/Database/DataSet/ITableMetaData.php                           \
+                phpunit/dbunit/Extensions/Database/DataSet/AbstractTableMetaData.php                    \
+                phpunit/dbunit/Extensions/Database/DataSet/ArrayDataSet.php                             \
+                phpunit/dbunit/Extensions/Database/DataSet/CompositeDataSet.php                         \
+                phpunit/dbunit/Extensions/Database/DataSet/DataSetFilter.php                            \
+                phpunit/dbunit/Extensions/Database/DataSet/DefaultDataSet.php                           \
+                phpunit/dbunit/Extensions/Database/DataSet/DefaultTable.php                             \
+                phpunit/dbunit/Extensions/Database/DataSet/ITableIterator.php                           \
+                phpunit/dbunit/Extensions/Database/DataSet/DefaultTableIterator.php                     \
+                phpunit/dbunit/Extensions/Database/DataSet/DefaultTableMetaData.php                     \
+                phpunit/dbunit/Extensions/Database/DataSet/QueryDataSet.php                             \
+                phpunit/dbunit/Extensions/Database/DataSet/QueryTable.php                               \
+                phpunit/dbunit/Extensions/Database/DataSet/ReplacementDataSet.php                       \
+                phpunit/dbunit/Extensions/Database/DataSet/ReplacementTable.php                         \
+                phpunit/dbunit/Extensions/Database/DataSet/ReplacementTableIterator.php                 \
+                phpunit/dbunit/Extensions/Database/DataSet/TableFilter.php                              \
+                phpunit/dbunit/Extensions/Database/DataSet/TableMetaDataFilter.php                      \
+                phpunit/dbunit/Extensions/Database/DB/DataSet.php                                       \
+                phpunit/dbunit/Extensions/Database/DB/IDatabaseConnection.php                           \
+                phpunit/dbunit/Extensions/Database/DB/DefaultDatabaseConnection.php                     \
+                phpunit/dbunit/Extensions/Database/DB/FilteredDataSet.php                               \
+                phpunit/dbunit/Extensions/Database/DB/IMetaData.php                                     \
+                phpunit/dbunit/Extensions/Database/DB/MetaData.php                                      \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/Dblib.php                                \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/Firebird.php                             \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/InformationSchema.php                    \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/MySQL.php                                \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/Oci.php                                  \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/PgSQL.php                                \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/Sqlite.php                               \
+                phpunit/dbunit/Extensions/Database/DB/MetaData/SqlSrv.php                               \
+                phpunit/dbunit/Extensions/Database/DB/ResultSetTable.php                                \
+                phpunit/dbunit/Extensions/Database/DB/Table.php                                         \
+                phpunit/dbunit/Extensions/Database/DB/TableIterator.php                                 \
+                phpunit/dbunit/Extensions/Database/DB/TableMetaData.php                                 \
+                phpunit/dbunit/Extensions/Database/DefaultTester.php                                    \
+                phpunit/dbunit/Extensions/Database/Exception.php                                        \
+                phpunit/dbunit/Extensions/Database/Operation/IDatabaseOperation.php                     \
+                phpunit/dbunit/Extensions/Database/Operation/Composite.php                              \
+                phpunit/dbunit/Extensions/Database/Operation/RowBased.php                               \
+                phpunit/dbunit/Extensions/Database/Operation/Delete.php                                 \
+                phpunit/dbunit/Extensions/Database/Operation/DeleteAll.php                              \
+                phpunit/dbunit/Extensions/Database/Operation/Exception.php                              \
+                phpunit/dbunit/Extensions/Database/Operation/Factory.php                                \
+                phpunit/dbunit/Extensions/Database/Operation/Insert.php                                 \
+                phpunit/dbunit/Extensions/Database/Operation/Null.php                                   \
+                phpunit/dbunit/Extensions/Database/Operation/Replace.php                                \
+                phpunit/dbunit/Extensions/Database/Operation/Truncate.php                               \
+                phpunit/dbunit/Extensions/Database/Operation/Update.php                                 \
+                phpunit/dbunit/Extensions/Database/TestCase.php
 
 lib-tmp/libphpunit-dev_u-4.4a.so: $(PHPUNIT_FILES)
 	bpc -v -l phpunit-dev $(PHPUNIT_FILES)

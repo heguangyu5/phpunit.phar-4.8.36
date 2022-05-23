@@ -641,6 +641,9 @@ class PHPUnit_TextUI_Command
     protected function handleBootstrap($filename)
     {
         try {
+            if (defined('__BPC__')) {
+                $filename = RUN_ROOT_DIR . '/' . $filename;
+            }
             PHPUnit_Util_Fileloader::checkAndLoad($filename);
         } catch (PHPUnit_Framework_Exception $e) {
             $this->showError($e->getMessage());
