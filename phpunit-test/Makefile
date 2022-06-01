@@ -3,7 +3,7 @@ FILES = run-test.php test-files
 test.dev: $(FILES)
 	bpc -v \
 	    -o test.dev \
-	    -u phpunit-dev \
+	    -u phpunit \
 	    -d display_errors=on \
 	    run-test.php \
 	    --input-file test-files
@@ -12,4 +12,3 @@ test.dev: $(FILES)
 test-init:
 	ln -s /usr/share/php/phpunit/ .
 	mkdir MockClassFile
-
