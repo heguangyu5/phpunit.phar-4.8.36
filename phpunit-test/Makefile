@@ -9,6 +9,6 @@ test.dev: $(FILES)
 	    --input-file test-files
 	rm -rf $(FILES)
 	rm -rf MockClassFile/*
+	rmdir MockClassFile
 test-init:
 	ln -s /usr/share/php/phpunit/ .
-	mkdir MockClassFile

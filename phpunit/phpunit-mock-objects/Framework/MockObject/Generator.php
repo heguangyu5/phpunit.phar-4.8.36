@@ -292,8 +292,20 @@ if (defined('__BPC__')) {
                 $callOriginalMethods
             );
 
+            $mockDir = getcwd() . '/MockClassFile';
+            if (!is_dir($mockDir)) {
+                $originalMask = umask(0);
+                if (!@mkdir($mockDir, 0777, true)) {
+                    umask($originalMask);
+                    throw new PHPUnit_Framework_MockObject_RuntimeException(
+                        'Can not create mock dir: ' . $mockDir
+                    );
+                }
+                umask($originalMask);
+            }
+
             if (!class_exists($mock['mockClassName'], false)) {
-                $mockClassPath = getcwd() . '/MockClassFile/' . $mockClassName . '.php';
+                $mockClassPath = $mockDir . '/' . $mockClassName . '.php';
                 file_put_contents($mockClassPath, "<?php\n\n" . $mock['code']);
                 include $mockClassPath;
             }
