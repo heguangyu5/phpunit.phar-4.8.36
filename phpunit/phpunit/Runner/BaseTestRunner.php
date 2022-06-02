@@ -64,14 +64,17 @@ abstract class PHPUnit_Runner_BaseTestRunner
                 );
 
                 if (isset($this->arguments['save-test-files-path'])) {
-                    $testParentDir = dirname(realpath($suiteClassName));
-                    $definedFiles  = array();
+                    $currentWorkingDir = getcwd();
+                    $definedFiles      = array();
                     foreach ($files as $file) {
-                         $definedFiles[] = "__DIR__ . '" . str_replace($testParentDir, '', $file) . "',";
+                         $definedFiles[] = "__DIR__ . '" . str_replace($currentWorkingDir, '', $file) . "',";
                     }
                     $definedFiles = implode("\n    ", $definedFiles);
                     $code = <<<RUNCODR
 <?php
+if (\$_SERVER['PHP_SELF'] == 'run-test.php') {
+    define('__BPC__', true);
+}
 define('RUN_ROOT_DIR', __DIR__);
 define('TESTCASE_LIST', array(
     $definedFiles
