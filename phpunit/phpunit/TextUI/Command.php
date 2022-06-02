@@ -34,49 +34,49 @@ class PHPUnit_TextUI_Command
      * @var array
      */
     protected $longOptions = array(
-        'colors=='             => null,
-        'bootstrap='           => null,
-        'columns='             => null,
-        'coverage-clover='     => null,
-        'coverage-crap4j='     => null,
-        'coverage-html='       => null,
-        'coverage-php='        => null,
-        'coverage-text=='      => null,
-        'coverage-xml='        => null,
-        'debug'                => null,
-        'exclude-group='       => null,
-        'filter='              => null,
-        'testsuite='           => null,
-        'group='               => null,
-        'help'                 => null,
-        'include-path='        => null,
-        'list-groups'          => null,
-        'loader='              => null,
-        'repeat='              => null,
-        'stderr'               => null,
-        'stop-on-error'        => null,
-        'stop-on-failure'      => null,
-        'stop-on-incomplete'   => null,
-        'stop-on-risky'        => null,
-        'stop-on-skipped'      => null,
-        'report-useless-tests' => null,
-        'strict-coverage'      => null,
-        'disallow-test-output' => null,
-        'enforce-time-limit'   => null,
-        'disallow-todo-tests'  => null,
-        'strict-global-state'  => null,
-        'strict'               => null,
-        'testdox'              => null,
-        'testdox-html='        => null,
-        'testdox-text='        => null,
-        'test-suffix='         => null,
-        'no-coverage'          => null,
-        'no-globals-backup'    => null,
-        'printer='             => null,
-        'static-backup'        => null,
-        'verbose'              => null,
-        'version'              => null,
-        'save-test-files-path' => null
+        'colors=='              => null,
+        'bootstrap='            => null,
+        'columns='              => null,
+        'coverage-clover='      => null,
+        'coverage-crap4j='      => null,
+        'coverage-html='        => null,
+        'coverage-php='         => null,
+        'coverage-text=='       => null,
+        'coverage-xml='         => null,
+        'debug'                 => null,
+        'exclude-group='        => null,
+        'filter='               => null,
+        'testsuite='            => null,
+        'group='                => null,
+        'help'                  => null,
+        'include-path='         => null,
+        'list-groups'           => null,
+        'loader='               => null,
+        'repeat='               => null,
+        'stderr'                => null,
+        'stop-on-error'         => null,
+        'stop-on-failure'       => null,
+        'stop-on-incomplete'    => null,
+        'stop-on-risky'         => null,
+        'stop-on-skipped'       => null,
+        'report-useless-tests'  => null,
+        'strict-coverage'       => null,
+        'disallow-test-output'  => null,
+        'enforce-time-limit'    => null,
+        'disallow-todo-tests'   => null,
+        'strict-global-state'   => null,
+        'strict'                => null,
+        'testdox'               => null,
+        'testdox-html='         => null,
+        'testdox-text='         => null,
+        'test-suffix='          => null,
+        'no-coverage'           => null,
+        'no-globals-backup'     => null,
+        'printer='              => null,
+        'static-backup'         => null,
+        'verbose'               => null,
+        'version'               => null,
+        'save-test-files-path=' => null
     );
 
     /**
@@ -160,7 +160,16 @@ class PHPUnit_TextUI_Command
                 $files      = array_merge($files, $existFiles);
             }
             $files = array_unique($files);
-            file_put_contents($testFilesPath, implode("\n", $files));
+            $saveFiles = array();
+            foreach ($files as $file) {
+                foreach ($this->arguments['save-test-files-path'] as $path) {
+                    if (strpos($file, $path) !== false) {
+                        $saveFiles[] = $file;
+                        break;
+                    }
+                }
+            }
+            file_put_contents($testFilesPath, implode("\n", $saveFiles));
         }
 
         $ret = PHPUnit_TextUI_TestRunner::FAILURE_EXIT;
@@ -257,7 +266,7 @@ class PHPUnit_TextUI_Command
 
         foreach ($this->options[0] as $option) {
             if ($option[0] == '--save-test-files-path') {
-                $this->arguments['save-test-files-path'] = true;
+                $this->arguments['save-test-files-path'] = explode(',', $option[1]);
                 $this->runBeforeFiles = get_included_files();
                 break;
             }
