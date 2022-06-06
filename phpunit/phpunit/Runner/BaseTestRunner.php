@@ -48,7 +48,7 @@ abstract class PHPUnit_Runner_BaseTestRunner
      */
     public function getTest($suiteClassName, $suiteClassFile = '', $suffixes = '')
     {
-        if (defined('__BPC__')) {
+        if (defined('TESTCASE_LIST')) {
             $files = TESTCASE_LIST;
             $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
             $suite->addTestFiles($files);
@@ -72,9 +72,6 @@ abstract class PHPUnit_Runner_BaseTestRunner
                     $definedFiles = implode("\n    ", $definedFiles);
                     $code = <<<RUNCODR
 <?php
-if (\$_SERVER['PHP_SELF'] == 'run-test.php') {
-    define('__BPC__', true);
-}
 define('RUN_ROOT_DIR', __DIR__);
 define('TESTCASE_LIST', array(
     $definedFiles
