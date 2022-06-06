@@ -40,9 +40,8 @@
   - 可先用phar跑一下，./phpunit-4.8.36.phar tests/ --bootstrap=bootstrap.php --group=xxx --exclude-group=exception(因为expectException等方法在4.8.36下还未支持)
 
   - 再用php跑一下修改过的程序, 目的是获取到测试文件列表和生成MockClass文件
-    - make test-init (运行前保证已修改的phpunit源码放在了/usr/share/php/文件夹下)
-    - php phpunit/phpunit.php tests/ --bootstrap=bootstrap.php --save-test-files-path (运行后会将测试所需的文件列表写入到test-files文件中，并生成测试入口文件run-test.php)
+    - phpunit-bpc tests/ --bootstrap=bootstrap.php --bpc=. (运行后会将测试所需的文件列表写入到test-files文件中，并生成测试入口文件run-test.php，和Makefile文件)
 
   - 再用编译过的跑一下
-    - make test.dev
-    - ./test.dev --bootstrap=bootstrap.php --group=xxx
+    - make
+    - ./test --bootstrap=bootstrap.php --group=xxx

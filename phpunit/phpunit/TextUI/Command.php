@@ -76,7 +76,7 @@ class PHPUnit_TextUI_Command
         'static-backup'         => null,
         'verbose'               => null,
         'version'               => null,
-        'save-test-files-path=' => null
+        'bpc='                  => null
     );
 
     /**
@@ -152,9 +152,11 @@ class PHPUnit_TextUI_Command
             print $e->getMessage() . "\n";
         }
 
-        if (isset($this->arguments['save-test-files-path'])) {
-            $files         = array_diff(get_included_files(), $this->runBeforeFiles);
-            $testFilesPath = getcwd() . '/test-files';
+        if (isset($this->arguments['bpc'])) {
+            // test-files
+            $currentWorkingDir = getcwd();
+            $files             = array_diff(get_included_files(), $this->runBeforeFiles);
+            $testFilesPath     = $currentWorkingDir . '/test-files';
             if (file_exists($testFilesPath)) {
                 $existFiles = file($testFilesPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 $files      = array_merge($files, $existFiles);
@@ -162,7 +164,7 @@ class PHPUnit_TextUI_Command
             $files = array_unique($files);
             $saveFiles = array();
             foreach ($files as $file) {
-                foreach ($this->arguments['save-test-files-path'] as $path) {
+                foreach ($this->arguments['bpc'] as $path) {
                     if (strpos($file, $path) !== false) {
                         $saveFiles[] = $file;
                         break;
@@ -170,6 +172,33 @@ class PHPUnit_TextUI_Command
                 }
             }
             file_put_contents($testFilesPath, implode("\n", $saveFiles));
+
+            // Makefile
+            if (in_array('PHPUnit_DbUnit_TestCase', get_declared_classes())) {
+                $phpunitExt = '-u phpunit-ext ';
+            } else {
+                $phpunitExt = '';
+            }
+$code = <<<MAKEFILECODR
+FILES = run-test.php test-files
+
+test: $(FILES)
+	bpc -v \
+	    -o test \
+	    -u phpunit $phpunitExt\
+	    -d display_errors=on \
+	    run-test.php \
+	    --input-file test-files
+
+clean:
+	@rm -rf .bpc-build-* md5.map
+	@rm -rf $(FILES)
+	@rm -rf MockClassFile/*
+	@rmdir MockClassFile
+MAKEFILECODR;
+            file_put_contents($currentWorkingDir . '/Makefile', $code);
+
+            print "\n\nThe test related files have been generated, you can run make to generate a compile test file\n";
         }
 
         $ret = PHPUnit_TextUI_TestRunner::FAILURE_EXIT;
@@ -265,8 +294,16 @@ class PHPUnit_TextUI_Command
         }
 
         foreach ($this->options[0] as $option) {
-            if ($option[0] == '--save-test-files-path') {
-                $this->arguments['save-test-files-path'] = explode(',', $option[1]);
+            if ($option[0] == '--bpc') {
+                $bpcPaths = explode(',', $option[1]);
+                foreach ($bpcPaths as $key => $bpcPath) {
+                    $bpcPath = realpath($bpcPath);
+                    if (!$bpcPath) {
+                        $this->showError("option --bpc is error path");
+                    }
+                    $bpcPaths[$key] = $bpcPath;
+                }
+                $this->arguments['bpc'] = $bpcPaths;
                 $this->runBeforeFiles = get_included_files();
                 break;
             }

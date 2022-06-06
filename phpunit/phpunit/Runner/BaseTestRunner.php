@@ -63,7 +63,7 @@ abstract class PHPUnit_Runner_BaseTestRunner
                     $suffixes
                 );
 
-                if (isset($this->arguments['save-test-files-path'])) {
+                if (isset($this->arguments['bpc'])) {
                     $currentWorkingDir = getcwd();
                     $definedFiles      = array();
                     foreach ($files as $file) {

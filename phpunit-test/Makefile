@@ -1,10 +1,9 @@
 FILES = run-test.php test-files
 
-test.dev: $(FILES)
+test: $(FILES)
 	bpc -v \
-	    -o test.dev \
+	    -o test \
 	    -u phpunit \
-	    -u phpunit-ext \
 	    -d display_errors=on \
 	    run-test.php \
 	    --input-file test-files
@@ -14,4 +13,3 @@ clean:
 	@rm -rf $(FILES)
 	@rm -rf MockClassFile/*
 	@rmdir MockClassFile
-

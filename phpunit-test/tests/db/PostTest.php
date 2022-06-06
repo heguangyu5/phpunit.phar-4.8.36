@@ -1,14 +1,10 @@
 <?php
 
-include 'phpunit-ext/loader.php';
-
 /**
  * @group db
  */
 class PostTest extends PHPUnit_DbUnit_Mysql_TestCase
 {
-    protected $mysqlDbname   = 'our_phpunit_test';
-
     static $classGroups = array('db');
 
     protected function getDataSet()
