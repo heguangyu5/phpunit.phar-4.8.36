@@ -55,22 +55,25 @@ abstract class PHPUnit_Runner_BaseTestRunner
 
             return $suite;
         } else {
-            if (is_dir($suiteClassName) &&
-                !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
-                $facade = new File_Iterator_Facade;
-                $files  = $facade->getFilesAsArray(
-                    $suiteClassName,
-                    $suffixes
-                );
+            if (defined('__BPC__')) {
+                // do nothing
+            } else {
+                if (is_dir($suiteClassName) &&
+                    !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
+                    $facade = new File_Iterator_Facade;
+                    $files  = $facade->getFilesAsArray(
+                        $suiteClassName,
+                        $suffixes
+                    );
 
-                if (isset($this->arguments['bpc'])) {
-                    $currentWorkingDir = getcwd();
-                    $definedFiles      = array();
-                    foreach ($files as $file) {
-                         $definedFiles[] = "__DIR__ . '" . str_replace($currentWorkingDir, '', $file) . "',";
-                    }
-                    $definedFiles = implode("\n    ", $definedFiles);
-                    $code = <<<RUNCODR
+                    if (isset($this->arguments['bpc'])) {
+                        $currentWorkingDir = getcwd();
+                        $definedFiles      = array();
+                        foreach ($files as $file) {
+                             $definedFiles[] = "__DIR__ . '" . str_replace($currentWorkingDir, '', $file) . "',";
+                        }
+                        $definedFiles = implode("\n    ", $definedFiles);
+                        $code = <<<RUNCODR
 <?php
 define('RUN_ROOT_DIR', __DIR__);
 define('TESTCASE_LIST', array(
@@ -81,13 +84,14 @@ include 'phpunit/loader.php';
 PHPUnit_TextUI_Command::main();
 RUNCODR;
 
-                    file_put_contents(getcwd() . '/run-test.php', $code);
+                        file_put_contents(getcwd() . '/run-test.php', $code);
+                    }
+
+                    $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
+                    $suite->addTestFiles($files);
+
+                    return $suite;
                 }
-
-                $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
-                $suite->addTestFiles($files);
-
-                return $suite;
             }
         }
 
