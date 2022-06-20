@@ -85,12 +85,6 @@ class PHPUnit_TextUI_Command
     private $versionStringPrinted = false;
 
     /**
-     * @var array
-     * save before test run included files
-     */
-    private $runBeforeFiles = array();
-
-    /**
      * @param bool $exit
      */
     public static function main($exit = true)
@@ -154,49 +148,9 @@ class PHPUnit_TextUI_Command
 
         if (isset($this->arguments['bpc'])) {
             // test-files
-            $currentWorkingDir = getcwd();
-            $files             = array_diff(get_included_files(), $this->runBeforeFiles);
-            $testFilesPath     = $currentWorkingDir . '/test-files';
-            if (file_exists($testFilesPath)) {
-                $existFiles = file($testFilesPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $files      = array_merge($files, $existFiles);
-            }
-            $files = array_unique($files);
-            $saveFiles = array();
-            foreach ($files as $file) {
-                foreach ($this->arguments['bpc'] as $path) {
-                    if (strpos($file, $path) !== false) {
-                        $saveFiles[] = $file;
-                        break;
-                    }
-                }
-            }
-            file_put_contents($testFilesPath, implode("\n", $saveFiles));
-
+            PHPUnit_Util_Bpc::saveTestFiles(BPC_RUN_BEFORE_FILES, $this->arguments['bpc']);
             // Makefile
-            if (in_array('PHPUnit_DbUnit_TestCase', get_declared_classes())) {
-                $phpunitExt = '-u phpunit-ext ';
-            } else {
-                $phpunitExt = '';
-            }
-$code = <<<MAKEFILECODR
-FILES = run-test.php test-files
-
-test: $(FILES)
-	bpc -v \
-	    -o test \
-	    -u phpunit $phpunitExt\
-	    -d display_errors=on \
-	    run-test.php \
-	    --input-file test-files
-
-clean:
-	@rm -rf .bpc-build-* md5.map
-	@rm -rf $(FILES)
-	@rm -rf MockClassFile/*
-	@rmdir MockClassFile
-MAKEFILECODR;
-            file_put_contents($currentWorkingDir . '/Makefile', $code);
+            PHPUnit_Util_Bpc::saveMakefile();
 
             print "\n\nThe test related files have been generated, you can run make to generate a compile test file\n";
         }
@@ -304,7 +258,9 @@ MAKEFILECODR;
                     $bpcPaths[$key] = $bpcPath;
                 }
                 $this->arguments['bpc'] = $bpcPaths;
-                $this->runBeforeFiles = get_included_files();
+                if (!defined('BPC_RUN_BEFORE_FILES')) {
+                    define('BPC_RUN_BEFORE_FILES', get_included_files());
+                }
                 break;
             }
         }

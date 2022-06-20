@@ -23,7 +23,7 @@ abstract class PHPUnit_Runner_BaseTestRunner
     const STATUS_RISKY      = 5;
     const SUITE_METHODNAME  = 'suite';
 
-    protected $arguments;
+    protected static $arguments;
 
     /**
      * Returns the loader to be used.
@@ -66,25 +66,8 @@ abstract class PHPUnit_Runner_BaseTestRunner
                         $suffixes
                     );
 
-                    if (isset($this->arguments['bpc'])) {
-                        $currentWorkingDir = getcwd();
-                        $definedFiles      = array();
-                        foreach ($files as $file) {
-                             $definedFiles[] = "__DIR__ . '" . str_replace($currentWorkingDir, '', $file) . "',";
-                        }
-                        $definedFiles = implode("\n    ", $definedFiles);
-                        $code = <<<RUNCODR
-<?php
-define('RUN_ROOT_DIR', __DIR__);
-define('TESTCASE_LIST', array(
-    $definedFiles
-));
-
-include 'phpunit/loader.php';
-PHPUnit_TextUI_Command::main();
-RUNCODR;
-
-                        file_put_contents(getcwd() . '/run-test.php', $code);
+                    if (isset(self::$arguments['bpc'])) {
+                        PHPUnit_Util_Bpc::saveRunTest($files);
                     }
 
                     $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
@@ -93,6 +76,10 @@ RUNCODR;
                     return $suite;
                 }
             }
+        }
+
+        if (isset(self::$arguments['bpc'])) {
+            PHPUnit_Util_Bpc::saveRunTest(array($suiteClassFile));
         }
 
         try {
@@ -170,6 +157,6 @@ RUNCODR;
 
     public function setArguments($arguments = array())
     {
-        $this->arguments = $arguments;
+        self::$arguments = $arguments;
     }
 }
