@@ -68,10 +68,13 @@ test: $(FILES)
 
 clean:
 	@rm -rf .bpc-build-* md5.map
-	@rm -rf $(FILES)
-	@rm -rf MockClassFile/*
-	@rmdir MockClassFile
+	@rm -fv $(FILES) test
+	@rm -rf MockClassFile
 MAKEFILECODR;
-        file_put_contents(getcwd() . '/Makefile', $code);
+
+        $makefilePath = getcwd() . '/Makefile';
+        if (!file_exists($makefilePath)) {
+            file_put_contents($makefilePath, $code);
+        }
     }
 }
