@@ -557,24 +557,17 @@ class PHPUnit_TextUI_Command
      * Handles the loading of the PHPUnit_Runner_TestSuiteLoader implementation.
      *
      * @param string $loaderClass
-     * @param string $loaderFile
      *
      * @return PHPUnit_Runner_TestSuiteLoader
      */
-    protected function handleLoader($loaderClass, $loaderFile = '')
+    protected function handleLoader($loaderClass)
     {
         if (!class_exists($loaderClass, false)) {
-            if ($loaderFile == '') {
-                $loaderFile = PHPUnit_Util_Filesystem::classNameToFilename(
-                    $loaderClass
-                );
-            }
+            $loaderFile = PHPUnit_Util_Filesystem::classNameToFilename(
+                $loaderClass
+            );
 
-            $loaderFile = stream_resolve_include_path($loaderFile);
-
-            if ($loaderFile) {
-                require $loaderFile;
-            }
+            include_once $loaderFile;
         }
 
         if (class_exists($loaderClass, false)) {
