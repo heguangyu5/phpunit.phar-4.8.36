@@ -261,6 +261,9 @@ class PHPUnit_Framework_TestSuite implements PHPUnit_Framework_Test, PHPUnit_Fra
      */
     public function addTestFile($filename)
     {
+        if (defined('__BPC__')) {
+            // just exclude else code
+        } else {
         if (!is_string($filename)) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string');
         }
@@ -291,34 +294,38 @@ class PHPUnit_Framework_TestSuite implements PHPUnit_Framework_Test, PHPUnit_Fra
 
         foreach ($this->foundClasses as $i => $className) {
             if (preg_match($shortnameRegEx, $className)) {
-                $newClasses = array($className);
-                unset($this->foundClasses[$i]);
-                break;
+                $class = new ReflectionClass($className);
+
+                if ($class->getFileName() == $filename) {
+                    $newClasses = array($className);
+                    unset($this->foundClasses[$i]);
+                    break;
+                }
             }
         }
 
         foreach ($newClasses as $className) {
-            if (method_exists($className, PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME)) {
-                $oldErrorHandler = set_error_handler(
-                    array('PHPUnit_Util_ErrorHandler', 'handleError')
-                );
-                try {
-                    $suiteMethodName = PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME;
-                    $this->addTest($className::$suiteMethodName());
-                } catch (PHPUnit_Framework_Error_Deprecated $e) {
-                    restore_error_handler();
-                    if (substr($e->getMessage(), 0, 17) == 'Non-static method') {
-                        throw new PHPUnit_Framework_Exception(
-                            'suite() method must be static.'
-                        );
+            $class = new ReflectionClass($className);
+
+            if (!$class->isAbstract()) {
+                if ($class->hasMethod(PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME)) {
+                    $method = $class->getMethod(
+                        PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME
+                    );
+
+                    if ($method->isStatic()) {
+                        $this->addTest($method->invoke(null, $className));
+                        PHPUnit_Util_Bpc::collectTestSuiteClass($class->getName(), $class->getFileName());
                     }
+                } elseif ($class->implementsInterface('PHPUnit_Framework_Test')) {
+                    $this->addTestSuite($class->getName());
+                    PHPUnit_Util_Bpc::collectTestSuiteClass($class->getName(), $class->getFileName());
                 }
-            } else {
-                $this->addTestSuite($className);
             }
         }
 
         $this->numTests = -1;
+        }
     }
 
     /**

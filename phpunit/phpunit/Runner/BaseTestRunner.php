@@ -32,7 +32,11 @@ abstract class PHPUnit_Runner_BaseTestRunner
      */
     public function getLoader()
     {
-        return new PHPUnit_Runner_StandardTestSuiteLoader;
+        if (defined('__BPC__')) {
+            // bpc not need loader, empty this function
+        } else {
+            return new PHPUnit_Runner_StandardTestSuiteLoader;
+        }
     }
 
     /**
@@ -48,38 +52,66 @@ abstract class PHPUnit_Runner_BaseTestRunner
      */
     public function getTest($suiteClassName, $suiteClassFile = '', $suffixes = '')
     {
+        // phpunit.php
+        // 1. 如果以 phpunit tests-dir 方式运行
+        //      $suiteClassName = tests-dir
+        //      $suiteClassFile = 空
+        // 2. 如果以 phpunit TestSuiteFile.php 方式运行
+        //      $suiteClassName = TestSuiteFile
+        //      $suiteClassFile = /path/to/TestSuiteFile.php
+        // 3. 如果以 phpunit tests-dir TestSuiteFile.php 方式运行
+        //      $suiteClassFile = tests-dir
+        //      $suiteClassFile = /path/to/TestSuiteFile.php
+        // 对于1来说,就是 $suite->addTestFiles($files)
+        // 对于2,3来说,loadSuiteClass()返回了$testClass
+        //
+        // run-test.php
+        //  只有当第1个或第2个参数以.php结尾时,
+        //      $suiteClassName = path/to/TestSuiteFile.php
+        //      $suiteClassFile = 空
+        //  其它情况下
+        //      $suiteClassName = BPC_TEST_LOAD_ALL
+        //      $suiteClassFile = 空
         if (defined('TESTCASE_LIST')) {
-            $files = TESTCASE_LIST;
+            $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
+            try {
+                if ($suiteClassName == 'BPC_TEST_LOAD_ALL') {
+                    foreach (TESTCASE_LIST as $className => $filename) {
+                        include_once RUN_ROOT_DIR . '/' . $filename;
+                        $suite->addTestSuite($className);
+                    }
+                } else {
+                    $className = array_search($suiteClassName, TESTCASE_LIST, true);
+                    if ($className) {
+                        include_once RUN_ROOT_DIR . '/' . $suiteClassName;
+                        $suite->addTestSuite($className);
+                    }
+                }
+                return $suite;
+            } catch (PHPUnit_Framework_Exception $e) {
+                $this->runFailed($e->getMessage());
+                return;
+            }
+        } else {
+        if (defined('__BPC__')) {
+            // just exclude else code
+        } else {
+        if (is_dir($suiteClassName) &&
+            !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
+            $facade = new File_Iterator_Facade;
+            $files  = $facade->getFilesAsArray(
+                $suiteClassName,
+                $suffixes
+            );
+
             $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
             $suite->addTestFiles($files);
 
-            return $suite;
-        } else {
-            if (defined('__BPC__')) {
-                // do nothing
-            } else {
-                if (is_dir($suiteClassName) &&
-                    !is_file($suiteClassName . '.php') && empty($suiteClassFile)) {
-                    $facade = new File_Iterator_Facade;
-                    $files  = $facade->getFilesAsArray(
-                        $suiteClassName,
-                        $suffixes
-                    );
-
-                    if (isset(self::$arguments['bpc'])) {
-                        PHPUnit_Util_Bpc::saveRunTest($files);
-                    }
-
-                    $suite = new PHPUnit_Framework_TestSuite($suiteClassName);
-                    $suite->addTestFiles($files);
-
-                    return $suite;
-                }
+            if (isset(self::$arguments['bpc'])) {
+                PHPUnit_Util_Bpc::generateEntryFile();
             }
-        }
 
-        if (isset(self::$arguments['bpc'])) {
-            PHPUnit_Util_Bpc::saveRunTest(array($suiteClassFile));
+            return $suite;
         }
 
         try {
@@ -93,27 +125,32 @@ abstract class PHPUnit_Runner_BaseTestRunner
             return;
         }
 
-        $suiteMethodName = self::SUITE_METHODNAME;
-        if (method_exists($testClass, $suiteMethodName)) {
-            $oldErrorHandler = set_error_handler(
-                array('PHPUnit_Util_ErrorHandler', 'handleError')
-            );
-            try {
-                $test = $testClass::$suiteMethodName();
-            } catch (PHPUnit_Framework_Error_Deprecated $e) {
-                restore_error_handler();
-                if (substr($e->getMessage(), 0, 17) == 'Non-static method') {
-                    $this->runFailed(
-                        'suite() method must be static.'
-                    );
+        try {
+            $suiteMethod = $testClass->getMethod(self::SUITE_METHODNAME);
 
-                    return;
-                }
+            if (!$suiteMethod->isStatic()) {
+                $this->runFailed(
+                    'suite() method must be static.'
+                );
+
+                return;
             }
 
-        } else {
             try {
-                $test = new PHPUnit_Framework_TestSuite($testClass);
+                $test = $suiteMethod->invoke(null, $testClass->getName());
+            } catch (ReflectionException $e) {
+                $this->runFailed(
+                    sprintf(
+                        "Failed to invoke suite() method.\n%s",
+                        $e->getMessage()
+                    )
+                );
+
+                return;
+            }
+        } catch (ReflectionException $e) {
+            try {
+                $test = new PHPUnit_Framework_TestSuite($testClass->getName());
             } catch (PHPUnit_Framework_Exception $e) {
                 $test = new PHPUnit_Framework_TestSuite;
                 $test->setName($suiteClassName);
@@ -122,16 +159,23 @@ abstract class PHPUnit_Runner_BaseTestRunner
 
         $this->clearStatus();
 
+        if (isset(self::$arguments['bpc'])) {
+            PHPUnit_Util_Bpc::collectTestSuiteClass($testClass->getName(), $testClass->getFileName());
+            PHPUnit_Util_Bpc::generateEntryFile();
+        }
+
         return $test;
+        }
+        }
     }
 
     /**
-     * Returns the loaded string for a suite name.
+     * Returns the loaded ReflectionClass for a suite name.
      *
      * @param string $suiteClassName
      * @param string $suiteClassFile
      *
-     * @return string
+     * @return ReflectionClass
      */
     protected function loadSuiteClass($suiteClassName, $suiteClassFile = '')
     {

@@ -19,7 +19,7 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
      * @param string $suiteClassName
      * @param string $suiteClassFile
      *
-     * @return string
+     * @return ReflectionClass
      *
      * @throws PHPUnit_Framework_Exception
      */
@@ -47,7 +47,9 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
             $offset = 0 - strlen($suiteClassName);
 
             foreach ($loadedClasses as $loadedClass) {
-                if (substr($loadedClass, $offset) === $suiteClassName) {
+                $class = new ReflectionClass($loadedClass);
+                if (substr($loadedClass, $offset) === $suiteClassName &&
+                    $class->getFileName() == $filename) {
                     $suiteClassName = $loadedClass;
                     break;
                 }
@@ -58,19 +60,41 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
             $testCaseClass = 'PHPUnit_Framework_TestCase';
 
             foreach ($loadedClasses as $loadedClass) {
-                if (is_subclass_of($loadedClass, $testCaseClass)) {
+                $class     = new ReflectionClass($loadedClass);
+                $classFile = $class->getFileName();
+
+                if ($class->isSubclassOf($testCaseClass) &&
+                    !$class->isAbstract()) {
                     $suiteClassName = $loadedClass;
                     $testCaseClass  = $loadedClass;
+
+                    if ($classFile == realpath($suiteClassFile)) {
+                        break;
+                    }
                 }
 
-                if (method_exists($loadedClass, 'suite')) {
-                    $suiteClassName = $loadedClass;
+                if ($class->hasMethod('suite')) {
+                    $method = $class->getMethod('suite');
+
+                    if (!$method->isAbstract() &&
+                        $method->isPublic() &&
+                        $method->isStatic()) {
+                        $suiteClassName = $loadedClass;
+
+                        if ($classFile == realpath($suiteClassFile)) {
+                            break;
+                        }
+                    }
                 }
             }
         }
 
         if (class_exists($suiteClassName, false)) {
-            return $suiteClassName;
+            $class = new ReflectionClass($suiteClassName);
+
+            if ($class->getFileName() == realpath($suiteClassFile)) {
+                return $class;
+            }
         }
 
         throw new PHPUnit_Framework_Exception(

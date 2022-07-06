@@ -2,26 +2,31 @@
 
 class PHPUnit_Util_Bpc
 {
-    public static function saveRunTest($files)
+    protected static $testSuiteClasses = array();
+
+    public static function collectTestSuiteClass($className, $filename)
     {
-        $currentWorkingDir = getcwd();
-        $definedFiles      = array();
-        foreach ($files as $file) {
-             $definedFiles[] = "__DIR__ . '" . str_replace($currentWorkingDir, '', $file) . "',";
+        self::$testSuiteClasses[$className] = $filename;
+    }
+
+    public static function generateEntryFile()
+    {
+        // className => filename
+        $prefixLen = strlen(getcwd()) + 1;
+        foreach (self::$testSuiteClasses as $className => $filename) {
+            self::$testSuiteClasses[$className] = substr($filename, $prefixLen);
         }
-        $definedFiles = implode("\n    ", $definedFiles);
-        $code = <<<RUNCODR
-<?php
+
+        file_put_contents(
+            'run-test.php',
+            "<?php
 define('RUN_ROOT_DIR', __DIR__);
-define('TESTCASE_LIST', array(
-    $definedFiles
-));
+define('TESTCASE_LIST', " . var_export(self::$testSuiteClasses, true) . ");
 
 include 'phpunit/loader.php';
 PHPUnit_TextUI_Command::main();
-RUNCODR;
-
-        file_put_contents($currentWorkingDir . '/run-test.php', $code);
+"
+        );
     }
 
     public static function saveTestFiles($runBeforeFiles, $dirPaths)
@@ -59,7 +64,7 @@ RUNCODR;
 FILES = run-test.php test-files
 
 test: $(FILES)
-	bpc -v2 \
+	bpc -v \
 	    -o test \
 	    -u phpunit $phpunitExt\
 	    -d display_errors=on \

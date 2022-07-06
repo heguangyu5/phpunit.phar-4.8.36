@@ -124,7 +124,6 @@ include __DIR__ . '/phpunit/Framework/Warning.php';
 include __DIR__ . '/phpunit/Runner/BaseTestRunner.php';
 include __DIR__ . '/phpunit/Runner/Exception.php';
 include __DIR__ . '/phpunit/Runner/TestSuiteLoader.php';
-include __DIR__ . '/phpunit/Runner/StandardTestSuiteLoader.php';
 include __DIR__ . '/phpunit/Runner/Version.php';
 include __DIR__ . '/phpunit/TextUI/Command.php';
 include __DIR__ . '/phpunit/Util/Printer.php';

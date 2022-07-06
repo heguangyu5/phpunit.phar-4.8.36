@@ -370,11 +370,15 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
      */
     public function getLoader()
     {
-        if ($this->loader === null) {
-            $this->loader = new PHPUnit_Runner_StandardTestSuiteLoader;
-        }
+        if (defined('__BPC__')) {
+            // bpc not need loader, empty this function
+        } else {
+            if ($this->loader === null) {
+                $this->loader = new PHPUnit_Runner_StandardTestSuiteLoader;
+            }
 
-        return $this->loader;
+            return $this->loader;
+        }
     }
 
     /**

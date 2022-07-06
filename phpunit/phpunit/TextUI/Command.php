@@ -498,21 +498,31 @@ class PHPUnit_TextUI_Command
         $this->handleCustomTestSuite();
 
         if (!isset($this->arguments['test'])) {
-            if (isset($this->options[1][0])) {
-                $this->arguments['test'] = $this->options[1][0];
-            }
+            if (defined('TESTCASE_LIST')) {
+                if (isset($this->options[1][0]) && substr($this->options[1][0], -4) == ".php") {
+                    $this->arguments['test'] = $this->options[1][0];
+                } elseif (isset($this->options[1][1]) && substr($this->options[1][1], -4) == ".php") {
+                    $this->arguments['test'] = $this->options[1][1];
+                }
 
-            if (isset($this->options[1][1])) {
-                $this->arguments['testFile'] = realpath($this->options[1][1]);
-            } else {
                 $this->arguments['testFile'] = '';
-            }
+            } else {
+                if (isset($this->options[1][0])) {
+                    $this->arguments['test'] = $this->options[1][0];
+                }
 
-            if (isset($this->arguments['test']) &&
-                is_file($this->arguments['test']) &&
-                substr($this->arguments['test'], -5, 5) != '.phpt') {
-                $this->arguments['testFile'] = realpath($this->arguments['test']);
-                $this->arguments['test']     = substr($this->arguments['test'], 0, strrpos($this->arguments['test'], '.'));
+                if (isset($this->options[1][1])) {
+                    $this->arguments['testFile'] = realpath($this->options[1][1]);
+                } else {
+                    $this->arguments['testFile'] = '';
+                }
+
+                if (isset($this->arguments['test']) &&
+                    is_file($this->arguments['test']) &&
+                    substr($this->arguments['test'], -5, 5) != '.phpt') {
+                    $this->arguments['testFile'] = realpath($this->arguments['test']);
+                    $this->arguments['test']     = substr($this->arguments['test'], 0, strrpos($this->arguments['test'], '.'));
+                }
             }
         }
 
@@ -540,9 +550,9 @@ class PHPUnit_TextUI_Command
             $this->arguments['printer'] = $this->handlePrinter($this->arguments['printer']);
         }
 
-        if (defined('__BPC__')) {
+        if (defined('TESTCASE_LIST')) {
             if (!isset($this->arguments['test'])) {
-                $this->arguments['test'] = 'BPC_TEST';
+                $this->arguments['test'] = 'BPC_TEST_LOAD_ALL';
             }
         } else {
             if (!isset($this->arguments['test']) ||
