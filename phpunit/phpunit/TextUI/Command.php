@@ -146,13 +146,17 @@ class PHPUnit_TextUI_Command
             print $e->getMessage() . "\n";
         }
 
-        if (isset($this->arguments['bpc'])) {
-            // test-files
-            PHPUnit_Util_Bpc::saveTestFiles(BPC_RUN_BEFORE_FILES, $this->arguments['bpc']);
-            // Makefile
-            PHPUnit_Util_Bpc::saveMakefile();
+        if (defined('__BPC__')) {
+            // just exclude else code
+        } else {
+            if (isset($this->arguments['bpc'])) {
+                // test-files
+                PHPUnit_Util_Bpc::saveTestFiles(BPC_RUN_BEFORE_FILES, $this->arguments['bpc']);
+                // Makefile
+                PHPUnit_Util_Bpc::saveMakefile();
 
-            print "\n\nThe test related files have been generated, you can run make to generate a compile test file\n";
+                print "\n\nThe test related files have been generated, you can run make to generate a compile test file\n";
+            }
         }
 
         $ret = PHPUnit_TextUI_TestRunner::FAILURE_EXIT;
